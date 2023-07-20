@@ -174,16 +174,16 @@ using ratio_divide = decltype(std::ratio_divide<R1, R2>{});
 // durations
 
 using days = std::chrono::duration
-  <int, detail::ratio_multiply<std::ratio<24>, std::chrono::hours::period>>;
+    <int, detail::ratio_multiply<std::ratio<24>, std::chrono::hours::period>>;
 
 using weeks = std::chrono::duration
-  <int, detail::ratio_multiply<std::ratio<7>, days::period>>;
+    <int, detail::ratio_multiply<std::ratio<7>, days::period>>;
 
 using years = std::chrono::duration
-  <int, detail::ratio_multiply<std::ratio<146097, 400>, days::period>>;
+    <int, detail::ratio_multiply<std::ratio<146097, 400>, days::period>>;
 
 using months = std::chrono::duration
-  <int, detail::ratio_divide<years::period, std::ratio<12>>>;
+    <int, detail::ratio_divide<years::period, std::ratio<12>>>;
 
 // time_point
 
@@ -320,7 +320,7 @@ class day
 {
   unsigned char d_;
 
-public:
+ public:
   day() = default;
   explicit CONSTCD11 day(unsigned d) NOEXCEPT;
 
@@ -358,7 +358,7 @@ class month
 {
   unsigned char m_;
 
-public:
+ public:
   month() = default;
   explicit CONSTCD11 month(unsigned m) NOEXCEPT;
 
@@ -396,7 +396,7 @@ class year
 {
   short y_;
 
-public:
+ public:
   year() = default;
   explicit CONSTCD11 year(int y) NOEXCEPT;
 
@@ -441,7 +441,7 @@ operator<<(std::basic_ostream<CharT, Traits>& os, const year& y);
 class weekday
 {
   unsigned char wd_;
-public:
+ public:
   weekday() = default;
   explicit CONSTCD11 weekday(unsigned wd) NOEXCEPT;
   CONSTCD14 weekday(const sys_days& dp) NOEXCEPT;
@@ -463,7 +463,7 @@ public:
   CONSTCD11 weekday_indexed operator[](unsigned index) const NOEXCEPT;
   CONSTCD11 weekday_last    operator[](last_spec)      const NOEXCEPT;
 
-private:
+ private:
   static CONSTCD14 unsigned char weekday_from_days(int z) NOEXCEPT;
 
   friend CONSTCD11 bool operator==(const weekday& x, const weekday& y) NOEXCEPT;
@@ -494,7 +494,7 @@ class weekday_indexed
   unsigned char wd_    : 4;
   unsigned char index_ : 4;
 
-public:
+ public:
   weekday_indexed() = default;
   CONSTCD11 weekday_indexed(const date::weekday& wd, unsigned index) NOEXCEPT;
 
@@ -516,7 +516,7 @@ class weekday_last
 {
   date::weekday wd_;
 
-public:
+ public:
   explicit CONSTCD11 weekday_last(const date::weekday& wd) NOEXCEPT;
 
   CONSTCD11 date::weekday weekday() const NOEXCEPT;
@@ -544,7 +544,7 @@ class year_month
   date::year  y_;
   date::month m_;
 
-public:
+ public:
   year_month() = default;
   CONSTCD11 year_month(const date::year& y, const date::month& m) NOEXCEPT;
 
@@ -591,7 +591,7 @@ class month_day
   date::month m_;
   date::day   d_;
 
-public:
+ public:
   month_day() = default;
   CONSTCD11 month_day(const date::month& m, const date::day& d) NOEXCEPT;
 
@@ -618,7 +618,7 @@ class month_day_last
 {
   date::month m_;
 
-public:
+ public:
   CONSTCD11 explicit month_day_last(const date::month& m) NOEXCEPT;
 
   CONSTCD11 date::month month() const NOEXCEPT;
@@ -642,7 +642,7 @@ class month_weekday
 {
   date::month           m_;
   date::weekday_indexed wdi_;
-public:
+ public:
   CONSTCD11 month_weekday(const date::month& m,
                           const date::weekday_indexed& wdi) NOEXCEPT;
 
@@ -666,7 +666,7 @@ class month_weekday_last
   date::month        m_;
   date::weekday_last wdl_;
 
-public:
+ public:
   CONSTCD11 month_weekday_last(const date::month& m,
                                const date::weekday_last& wd) NOEXCEPT;
 
@@ -693,7 +693,7 @@ class year_month_day
   date::month m_;
   date::day   d_;
 
-public:
+ public:
   year_month_day() = default;
   CONSTCD11 year_month_day(const date::year& y, const date::month& m,
                            const date::day& d) NOEXCEPT;
@@ -717,7 +717,7 @@ public:
   CONSTCD14 explicit operator local_days() const NOEXCEPT;
   CONSTCD14 bool ok() const NOEXCEPT;
 
-private:
+ private:
   static CONSTCD14 year_month_day from_days(days dp) NOEXCEPT;
   CONSTCD14 days to_days() const NOEXCEPT;
 };
@@ -750,7 +750,7 @@ class year_month_day_last
   date::year           y_;
   date::month_day_last mdl_;
 
-public:
+ public:
   CONSTCD11 year_month_day_last(const date::year& y,
                                 const date::month_day_last& mdl) NOEXCEPT;
 
@@ -823,7 +823,7 @@ class year_month_weekday
   date::month           m_;
   date::weekday_indexed wdi_;
 
-public:
+ public:
   year_month_weekday() = default;
   CONSTCD11 year_month_weekday(const date::year& y, const date::month& m,
                                const date::weekday_indexed& wdi) NOEXCEPT;
@@ -847,7 +847,7 @@ public:
   CONSTCD14 explicit operator local_days() const NOEXCEPT;
   CONSTCD14 bool ok() const NOEXCEPT;
 
-private:
+ private:
   static CONSTCD14 year_month_weekday from_days(days dp) NOEXCEPT;
   CONSTCD14 days to_days() const NOEXCEPT;
 };
@@ -896,7 +896,7 @@ class year_month_weekday_last
   date::month m_;
   date::weekday_last wdl_;
 
-public:
+ public:
   CONSTCD11 year_month_weekday_last(const date::year& y, const date::month& m,
                                     const date::weekday_last& wdl) NOEXCEPT;
 
@@ -916,7 +916,7 @@ public:
   CONSTCD14 explicit operator local_days() const NOEXCEPT;
   CONSTCD11 bool ok() const NOEXCEPT;
 
-private:
+ private:
   CONSTCD14 days to_days() const NOEXCEPT;
 };
 
@@ -994,14 +994,14 @@ CONSTCD11 date::year operator "" _y(unsigned long long y) NOEXCEPT;
 
 template <class T, class = std::void_t<>>
 struct is_clock
-  : std::false_type
+    : std::false_type
 {};
 
 template <class T>
 struct is_clock<T, std::void_t<decltype(T::now()), typename T::rep, typename T::period,
-  typename T::duration, typename T::time_point,
-  decltype(T::is_steady)>>
-  : std::true_type
+                               typename T::duration, typename T::time_point,
+                               decltype(T::is_steady)>>
+    : std::true_type
 {};
 
 template<class T> inline constexpr bool is_clock_v = is_clock<T>::value;
@@ -1018,7 +1018,7 @@ namespace detail {
 template<class CharT, class Traits = std::char_traits<CharT>>
 class save_istream
 {
-protected:
+ protected:
   std::basic_ios<CharT, Traits>& is_;
   CharT fill_;
   std::ios::fmtflags flags_;
@@ -1027,7 +1027,7 @@ protected:
   std::basic_ostream<CharT, Traits>* tie_;
   std::locale loc_;
 
-public:
+ public:
   ~save_istream()
   {
     is_.fill(fill_);
@@ -1042,13 +1042,13 @@ public:
   save_istream& operator=(const save_istream&) = delete;
 
   explicit save_istream(std::basic_ios<CharT, Traits>& is)
-    : is_(is)
-    , fill_(is.fill())
-    , flags_(is.flags())
-    , precision_(is.precision())
-    , width_(is.width(0))
-    , tie_(is.tie(nullptr))
-    , loc_(is.getloc())
+      : is_(is)
+      , fill_(is.fill())
+      , flags_(is.flags())
+      , precision_(is.precision())
+      , width_(is.width(0))
+      , tie_(is.tie(nullptr))
+      , loc_(is.getloc())
   {
     if (tie_ != nullptr)
       tie_->flush();
@@ -1057,17 +1057,17 @@ public:
 
 template<class CharT, class Traits = std::char_traits<CharT>>
 class save_ostream
-  : private save_istream<CharT, Traits>
+    : private save_istream<CharT, Traits>
 {
-public:
+ public:
   ~save_ostream()
   {
     if ((this->flags_ & std::ios::unitbuf) &&
-        #if HAS_UNCAUGHT_EXCEPTIONS
+#if HAS_UNCAUGHT_EXCEPTIONS
         std::uncaught_exceptions() == 0 &&
-        #else
+#else
         !std::uncaught_exception() &&
-        #endif
+#endif
         this->is_.good())
       this->is_.rdbuf()->pubsync();
   }
@@ -1076,7 +1076,7 @@ public:
   save_ostream& operator=(const save_ostream&) = delete;
 
   explicit save_ostream(std::basic_ios<CharT, Traits>& os)
-    : save_istream<CharT, Traits>(os)
+      : save_istream<CharT, Traits>(os)
   {
   }
 };
@@ -1086,30 +1086,30 @@ struct choose_trunc_type
 {
   static const int digits = std::numeric_limits<T>::digits;
   using type = typename std::conditional
-    <
-      digits < 32,
-      std::int32_t,
-      typename std::conditional
-        <
-          digits < 64,
-          std::int64_t,
-#ifdef __SIZEOF_INT128__
-          __int128
+      <
+          digits < 32,
+          std::int32_t,
+          typename std::conditional
+              <
+                  digits < 64,
+                  std::int64_t,
+                  #ifdef __SIZEOF_INT128__
+                  __int128
 #else
-        std::int64_t
+              std::int64_t
 #endif
-      >::type
-    >::type;
+          >::type
+      >::type;
 };
 
 template <class T>
 CONSTCD11
 inline
 typename std::enable_if
-  <
-    !std::chrono::treat_as_floating_point<T>::value,
-    T
-  >::type
+    <
+        !std::chrono::treat_as_floating_point<T>::value,
+        T
+    >::type
 trunc(T t) NOEXCEPT
 {
   return t;
@@ -1119,10 +1119,10 @@ template <class T>
 CONSTCD14
 inline
 typename std::enable_if
-  <
-    std::chrono::treat_as_floating_point<T>::value,
-    T
-  >::type
+    <
+        std::chrono::treat_as_floating_point<T>::value,
+        T
+    >::type
 trunc(T t) NOEXCEPT
 {
   using std::numeric_limits;
@@ -1162,7 +1162,7 @@ struct static_gcd<0, 0>
 template <class R1, class R2>
 struct no_overflow
 {
-private:
+ private:
   static const std::intmax_t gcd_n1_n2 = static_gcd<R1::num, R2::num>::value;
   static const std::intmax_t gcd_d1_d2 = static_gcd<R1::den, R2::den>::value;
   static const std::intmax_t n1 = R1::num / gcd_n1_n2;
@@ -1187,10 +1187,10 @@ private:
     static const std::intmax_t value = 1;
   };
 
-public:
+ public:
   static const bool value = (n1 <= max / d2) && (n2 <= max / d1);
   typedef std::ratio<mul<n1, d2, !value>::value,
-    mul<n2, d1, !value>::value> type;
+                     mul<n2, d1, !value>::value> type;
 };
 
 }  // detail
@@ -1200,10 +1200,10 @@ template <class To, class Rep, class Period>
 CONSTCD11
 inline
 typename std::enable_if
-  <
-    detail::no_overflow<Period, typename To::period>::value,
-    To
-  >::type
+    <
+        detail::no_overflow<Period, typename To::period>::value,
+        To
+    >::type
 trunc(const std::chrono::duration<Rep, Period>& d)
 {
   return To{detail::trunc(std::chrono::duration_cast<To>(d).count())};
@@ -1213,10 +1213,10 @@ template <class To, class Rep, class Period>
 CONSTCD11
 inline
 typename std::enable_if
-  <
-    !detail::no_overflow<Period, typename To::period>::value,
-    To
-  >::type
+    <
+        !detail::no_overflow<Period, typename To::period>::value,
+        To
+    >::type
 trunc(const std::chrono::duration<Rep, Period>& d)
 {
   using std::chrono::duration_cast;
@@ -1368,10 +1368,10 @@ template <class To, class Rep, class Period>
 CONSTCD14
 inline
 typename std::enable_if
-  <
-    !std::chrono::treat_as_floating_point<typename To::rep>::value,
-    To
-  >::type
+    <
+        !std::chrono::treat_as_floating_point<typename To::rep>::value,
+        To
+    >::type
 round_i(const std::chrono::duration<Rep, Period>& d)
 {
   return round<To>(d);
@@ -1381,10 +1381,10 @@ template <class To, class Rep, class Period>
 CONSTCD14
 inline
 typename std::enable_if
-  <
-    std::chrono::treat_as_floating_point<typename To::rep>::value,
-    To
-  >::type
+    <
+        std::chrono::treat_as_floating_point<typename To::rep>::value,
+        To
+    >::type
 round_i(const std::chrono::duration<Rep, Period>& d)
 {
   return d;
@@ -1479,7 +1479,7 @@ days
 operator-(const day& x, const day& y) NOEXCEPT
 {
   return days{static_cast<days::rep>(static_cast<unsigned>(x)
-                                     - static_cast<unsigned>(y))};
+      - static_cast<unsigned>(y))};
 }
 
 CONSTCD11
@@ -1829,19 +1829,19 @@ weekday::weekday_from_days(int z) NOEXCEPT
 CONSTCD11
 inline
 weekday::weekday(unsigned wd) NOEXCEPT
-  : wd_(static_cast<decltype(wd_)>(wd != 7 ? wd : 0))
+    : wd_(static_cast<decltype(wd_)>(wd != 7 ? wd : 0))
 {}
 
 CONSTCD14
 inline
 weekday::weekday(const sys_days& dp) NOEXCEPT
-  : wd_(weekday_from_days(dp.time_since_epoch().count()))
+    : wd_(weekday_from_days(dp.time_since_epoch().count()))
 {}
 
 CONSTCD14
 inline
 weekday::weekday(const local_days& dp) NOEXCEPT
-  : wd_(weekday_from_days(dp.time_since_epoch().count()))
+    : wd_(weekday_from_days(dp.time_since_epoch().count()))
 {}
 
 CONSTCD14 inline weekday& weekday::operator++() NOEXCEPT {*this += days{1}; return *this;}
@@ -2062,8 +2062,8 @@ weekday_indexed::ok() const NOEXCEPT
 CONSTCD11
 inline
 weekday_indexed::weekday_indexed(const date::weekday& wd, unsigned index) NOEXCEPT
-  : wd_(static_cast<decltype(wd_)>(static_cast<unsigned>(wd.wd_)))
-  , index_(static_cast<decltype(index_)>(index))
+    : wd_(static_cast<decltype(wd_)>(static_cast<unsigned>(wd.wd_)))
+    , index_(static_cast<decltype(index_)>(index))
 {}
 
 #ifdef __GNUC__
@@ -2175,8 +2175,8 @@ weekday::operator[](last_spec) const NOEXCEPT
 CONSTCD11
 inline
 year_month::year_month(const date::year& y, const date::month& m) NOEXCEPT
-  : y_(y)
-  , m_(m)
+    : y_(y)
+    , m_(m)
 {}
 
 CONSTCD11 inline year year_month::year() const NOEXCEPT {return y_;}
@@ -2307,7 +2307,7 @@ months
 operator-(const year_month& x, const year_month& y) NOEXCEPT
 {
   return (x.year() - y.year()) +
-         months(static_cast<unsigned>(x.month()) - static_cast<unsigned>(y.month()));
+      months(static_cast<unsigned>(x.month()) - static_cast<unsigned>(y.month()));
 }
 
 CONSTCD11
@@ -2363,8 +2363,8 @@ operator<<(std::basic_ostream<CharT, Traits>& os, const year_month& ym)
 CONSTCD11
 inline
 month_day::month_day(const date::month& m, const date::day& d) NOEXCEPT
-  : m_(m)
-  , d_(d)
+    : m_(m)
+    , d_(d)
 {}
 
 CONSTCD11 inline date::month month_day::month() const NOEXCEPT {return m_;}
@@ -2376,12 +2376,12 @@ bool
 month_day::ok() const NOEXCEPT
 {
   CONSTDATA date::day d[] =
-    {
-      date::day(31), date::day(29), date::day(31),
-      date::day(30), date::day(31), date::day(30),
-      date::day(31), date::day(31), date::day(30),
-      date::day(31), date::day(30), date::day(31)
-    };
+      {
+          date::day(31), date::day(29), date::day(31),
+          date::day(30), date::day(31), date::day(30),
+          date::day(31), date::day(31), date::day(30),
+          date::day(31), date::day(30), date::day(31)
+      };
   return m_.ok() && date::day{1} <= d_ && d_ <= d[static_cast<unsigned>(m_)-1];
 }
 
@@ -2542,8 +2542,8 @@ CONSTCD11
 inline
 month_weekday::month_weekday(const date::month& m,
                              const date::weekday_indexed& wdi) NOEXCEPT
-  : m_(m)
-  , wdi_(wdi)
+    : m_(m)
+    , wdi_(wdi)
 {}
 
 CONSTCD11 inline month month_weekday::month() const NOEXCEPT {return m_;}
@@ -2610,8 +2610,8 @@ CONSTCD11
 inline
 month_weekday_last::month_weekday_last(const date::month& m,
                                        const date::weekday_last& wdl) NOEXCEPT
-  : m_(m)
-  , wdl_(wdl)
+    : m_(m)
+    , wdl_(wdl)
 {}
 
 CONSTCD11 inline month month_weekday_last::month() const NOEXCEPT {return m_;}
@@ -2678,8 +2678,8 @@ CONSTCD11
 inline
 year_month_day_last::year_month_day_last(const date::year& y,
                                          const date::month_day_last& mdl) NOEXCEPT
-  : y_(y)
-  , mdl_(mdl)
+    : y_(y)
+    , mdl_(mdl)
 {}
 
 template<class>
@@ -2737,12 +2737,12 @@ day
 year_month_day_last::day() const NOEXCEPT
 {
   CONSTDATA date::day d[] =
-    {
-      date::day(31), date::day(28), date::day(31),
-      date::day(30), date::day(31), date::day(30),
-      date::day(31), date::day(31), date::day(30),
-      date::day(31), date::day(30), date::day(31)
-    };
+      {
+          date::day(31), date::day(28), date::day(31),
+          date::day(30), date::day(31), date::day(30),
+          date::day(31), date::day(31), date::day(30),
+          date::day(31), date::day(30), date::day(31)
+      };
   return (month() != February || !y_.is_leap()) && mdl_.ok() ?
          d[static_cast<unsigned>(month()) - 1] : date::day{29};
 }
@@ -2900,29 +2900,29 @@ CONSTCD11
 inline
 year_month_day::year_month_day(const date::year& y, const date::month& m,
                                const date::day& d) NOEXCEPT
-  : y_(y)
-  , m_(m)
-  , d_(d)
+    : y_(y)
+    , m_(m)
+    , d_(d)
 {}
 
 CONSTCD14
 inline
 year_month_day::year_month_day(const year_month_day_last& ymdl) NOEXCEPT
-  : y_(ymdl.year())
-  , m_(ymdl.month())
-  , d_(ymdl.day())
+    : y_(ymdl.year())
+    , m_(ymdl.month())
+    , d_(ymdl.day())
 {}
 
 CONSTCD14
 inline
 year_month_day::year_month_day(sys_days dp) NOEXCEPT
-  : year_month_day(from_days(dp.time_since_epoch()))
+    : year_month_day(from_days(dp.time_since_epoch()))
 {}
 
 CONSTCD14
 inline
 year_month_day::year_month_day(local_days dp) NOEXCEPT
-  : year_month_day(from_days(dp.time_since_epoch()))
+    : year_month_day(from_days(dp.time_since_epoch()))
 {}
 
 CONSTCD11 inline year year_month_day::year() const NOEXCEPT {return y_;}
@@ -3160,21 +3160,21 @@ inline
 year_month_weekday::year_month_weekday(const date::year& y, const date::month& m,
                                        const date::weekday_indexed& wdi)
 NOEXCEPT
-  : y_(y)
-  , m_(m)
-  , wdi_(wdi)
+    : y_(y)
+    , m_(m)
+    , wdi_(wdi)
 {}
 
 CONSTCD14
 inline
 year_month_weekday::year_month_weekday(const sys_days& dp) NOEXCEPT
-  : year_month_weekday(from_days(dp.time_since_epoch()))
+    : year_month_weekday(from_days(dp.time_since_epoch()))
 {}
 
 CONSTCD14
 inline
 year_month_weekday::year_month_weekday(const local_days& dp) NOEXCEPT
-  : year_month_weekday(from_days(dp.time_since_epoch()))
+    : year_month_weekday(from_days(dp.time_since_epoch()))
 {}
 
 template<class>
@@ -3266,7 +3266,7 @@ year_month_weekday::ok() const NOEXCEPT
   if (wdi_.index() <= 4)
     return true;
   auto d2 = wdi_.weekday() - date::weekday(static_cast<sys_days>(y_/m_/1)) +
-            days((wdi_.index()-1)*7 + 1);
+      days((wdi_.index()-1)*7 + 1);
   return static_cast<unsigned>(d2.count()) <= static_cast<unsigned>((y_/m_/last).day());
 }
 
@@ -3297,7 +3297,7 @@ bool
 operator==(const year_month_weekday& x, const year_month_weekday& y) NOEXCEPT
 {
   return x.year() == y.year() && x.month() == y.month() &&
-         x.weekday_indexed() == y.weekday_indexed();
+      x.weekday_indexed() == y.weekday_indexed();
 }
 
 CONSTCD11
@@ -3379,9 +3379,9 @@ inline
 year_month_weekday_last::year_month_weekday_last(const date::year& y,
                                                  const date::month& m,
                                                  const date::weekday_last& wdl) NOEXCEPT
-  : y_(y)
-  , m_(m)
-  , wdl_(wdl)
+    : y_(y)
+    , m_(m)
+    , wdl_(wdl)
 {}
 
 template<class>
@@ -3478,7 +3478,7 @@ bool
 operator==(const year_month_weekday_last& x, const year_month_weekday_last& y) NOEXCEPT
 {
   return x.year() == y.year() && x.month() == y.month() &&
-         x.weekday_last() == y.weekday_last();
+      x.weekday_last() == y.weekday_last();
 }
 
 CONSTCD11
@@ -3917,7 +3917,7 @@ struct undocumented {explicit undocumented() = default;};
 // Example:  width<10>::value   ==  1
 // Example:  width<1000>::value ==  3
 template <std::uint64_t n, std::uint64_t d, unsigned w = 0,
-  bool should_continue = n%d != 0 && (w < 19)>
+    bool should_continue = n%d != 0 && (w < 19)>
 struct width
 {
   static_assert(d > 0, "width called with zero denominator");
@@ -3933,9 +3933,9 @@ struct width<n, d, w, false>
 template <unsigned exp>
 struct static_pow10
 {
-private:
+ private:
   static CONSTDATA std::uint64_t h = static_pow10<exp/2>::value;
-public:
+ public:
   static CONSTDATA std::uint64_t value = h * h * (exp % 2 ? 10 : 1);
 };
 
@@ -3951,25 +3951,25 @@ class decimal_format_seconds
   using CT = typename std::common_type<Duration, std::chrono::seconds>::type;
   using rep = typename CT::rep;
   static unsigned CONSTDATA trial_width =
-    detail::width<CT::period::num, CT::period::den>::value;
-public:
+      detail::width<CT::period::num, CT::period::den>::value;
+ public:
   static unsigned CONSTDATA width = trial_width < 19 ? trial_width : 6u;
   using precision = std::chrono::duration<rep,
-    std::ratio<1, static_pow10<width>::value>>;
+                                          std::ratio<1, static_pow10<width>::value>>;
 
-private:
+ private:
   std::chrono::seconds s_;
   precision            sub_s_;
 
-public:
+ public:
   CONSTCD11 decimal_format_seconds()
-    : s_()
-    , sub_s_()
+      : s_()
+      , sub_s_()
   {}
 
   CONSTCD11 explicit decimal_format_seconds(const Duration& d) NOEXCEPT
-    : s_(std::chrono::duration_cast<std::chrono::seconds>(d))
-    , sub_s_(std::chrono::duration_cast<precision>(d - s_))
+      : s_(std::chrono::duration_cast<std::chrono::seconds>(d))
+      , sub_s_(std::chrono::duration_cast<precision>(d - s_))
   {}
 
   CONSTCD14 std::chrono::seconds& seconds() NOEXCEPT {return s_;}
@@ -4036,10 +4036,10 @@ template <class Rep, class Period>
 inline
 CONSTCD11
 typename std::enable_if
-  <
-    std::numeric_limits<Rep>::is_signed,
-    std::chrono::duration<Rep, Period>
-  >::type
+    <
+        std::numeric_limits<Rep>::is_signed,
+        std::chrono::duration<Rep, Period>
+    >::type
 abs(std::chrono::duration<Rep, Period> d)
 {
   return d >= d.zero() ? +d : -d;
@@ -4049,10 +4049,10 @@ template <class Rep, class Period>
 inline
 CONSTCD11
 typename std::enable_if
-  <
-    !std::numeric_limits<Rep>::is_signed,
-    std::chrono::duration<Rep, Period>
-  >::type
+    <
+        !std::numeric_limits<Rep>::is_signed,
+        std::chrono::duration<Rep, Period>
+    >::type
 abs(std::chrono::duration<Rep, Period> d)
 {
   return d;
@@ -4064,26 +4064,26 @@ template <class Duration>
 class hh_mm_ss
 {
   using dfs = detail::decimal_format_seconds<typename std::common_type<Duration,
-    std::chrono::seconds>::type>;
+                                                                       std::chrono::seconds>::type>;
 
   std::chrono::hours h_;
   std::chrono::minutes m_;
   dfs s_;
   bool neg_;
 
-public:
+ public:
   static unsigned CONSTDATA fractional_width = dfs::width;
   using precision = typename dfs::precision;
 
   CONSTCD11 hh_mm_ss() NOEXCEPT
-    : hh_mm_ss(Duration::zero())
+      : hh_mm_ss(Duration::zero())
   {}
 
   CONSTCD11 explicit hh_mm_ss(Duration d) NOEXCEPT
-    : h_(std::chrono::duration_cast<std::chrono::hours>(detail::abs(d)))
-    , m_(std::chrono::duration_cast<std::chrono::minutes>(detail::abs(d)) - h_)
-    , s_(detail::abs(d) - h_ - m_)
-    , neg_(d < Duration::zero())
+      : h_(std::chrono::duration_cast<std::chrono::hours>(detail::abs(d)))
+      , m_(std::chrono::duration_cast<std::chrono::minutes>(detail::abs(d)) - h_)
+      , s_(detail::abs(d) - h_ - m_)
+      , neg_(d < Duration::zero())
   {}
 
   CONSTCD11 std::chrono::hours hours() const NOEXCEPT {return h_;}
@@ -4101,10 +4101,10 @@ public:
   CONSTCD11 bool in_conventional_range() const NOEXCEPT
   {
     return !neg_ && h_ < days{1} && m_ < std::chrono::hours{1} &&
-           s_.in_conventional_range();
+        s_.in_conventional_range();
   }
 
-private:
+ private:
 
   template <class charT, class traits>
   friend
@@ -4205,10 +4205,10 @@ make_time(const std::chrono::duration<Rep, Period>& d)
 template <class CharT, class Traits, class Duration>
 inline
 typename std::enable_if
-  <
-    std::ratio_less<typename Duration::period, days::period>::value
-    , std::basic_ostream<CharT, Traits>&
-  >::type
+    <
+        std::ratio_less<typename Duration::period, days::period>::value
+        , std::basic_ostream<CharT, Traits>&
+    >::type
 operator<<(std::basic_ostream<CharT, Traits>& os, const sys_time<Duration>& tp)
 {
   auto const dp = date::floor<days>(tp);
@@ -4241,7 +4241,7 @@ template <class CharT1, class CharT2, std::size_t N1, std::size_t N2>
 inline
 CONSTCD14
 string_literal<typename std::conditional<sizeof(CharT2) <= sizeof(CharT1), CharT1, CharT2>::type,
-  N1 + N2 - 1>
+               N1 + N2 - 1>
 operator+(const string_literal<CharT1, N1>& x, const string_literal<CharT2, N2>& y) NOEXCEPT;
 
 template <class CharT, std::size_t N>
@@ -4250,56 +4250,56 @@ class string_literal
   CharT p_[N];
 
   CONSTCD11 string_literal() NOEXCEPT
-    : p_{}
+      : p_{}
   {}
 
-public:
+ public:
   using const_iterator = const CharT*;
 
   string_literal(string_literal const&) = default;
   string_literal& operator=(string_literal const&) = delete;
 
   template <std::size_t N1 = 2,
-    class = typename std::enable_if<N1 == N>::type>
+      class = typename std::enable_if<N1 == N>::type>
   CONSTCD11 string_literal(CharT c) NOEXCEPT
-    : p_{c}
+      : p_{c}
   {
   }
 
   template <std::size_t N1 = 3,
-    class = typename std::enable_if<N1 == N>::type>
+      class = typename std::enable_if<N1 == N>::type>
   CONSTCD11 string_literal(CharT c1, CharT c2) NOEXCEPT
-    : p_{c1, c2}
+      : p_{c1, c2}
   {
   }
 
   template <std::size_t N1 = 4,
-    class = typename std::enable_if<N1 == N>::type>
+      class = typename std::enable_if<N1 == N>::type>
   CONSTCD11 string_literal(CharT c1, CharT c2, CharT c3) NOEXCEPT
-    : p_{c1, c2, c3}
+      : p_{c1, c2, c3}
   {
   }
 
   CONSTCD14 string_literal(const CharT(&a)[N]) NOEXCEPT
-    : p_{}
+      : p_{}
   {
     for (std::size_t i = 0; i < N; ++i)
       p_[i] = a[i];
   }
 
   template <class U = CharT,
-    class = typename std::enable_if<(1 < sizeof(U))>::type>
+      class = typename std::enable_if<(1 < sizeof(U))>::type>
   CONSTCD14 string_literal(const char(&a)[N]) NOEXCEPT
-    : p_{}
+      : p_{}
   {
     for (std::size_t i = 0; i < N; ++i)
       p_[i] = a[i];
   }
 
   template <class CharT2,
-    class = typename std::enable_if<!std::is_same<CharT2, CharT>::value>::type>
+      class = typename std::enable_if<!std::is_same<CharT2, CharT>::value>::type>
   CONSTCD14 string_literal(string_literal<CharT2, N> const& a) NOEXCEPT
-    : p_{}
+      : p_{}
   {
     for (std::size_t i = 0; i < N; ++i)
       p_[i] = a[i];
@@ -4328,7 +4328,7 @@ public:
   friend
   CONSTCD14
   string_literal<typename std::conditional<sizeof(CharT2) <= sizeof(CharT1), CharT1, CharT2>::type,
-    N1 + N2 - 1>
+                 N1 + N2 - 1>
   operator+(const string_literal<CharT1, N1>& x, const string_literal<CharT2, N2>& y) NOEXCEPT;
 };
 
@@ -4354,7 +4354,7 @@ template <class CharT1, class CharT2, std::size_t N1, std::size_t N2>
 CONSTCD14
 inline
 string_literal<typename std::conditional<sizeof(CharT2) <= sizeof(CharT1), CharT1, CharT2>::type,
-  N1 + N2 - 1>
+               N1 + N2 - 1>
 operator+(const string_literal<CharT1, N1>& x, const string_literal<CharT2, N2>& y) NOEXCEPT
 {
   using CT = typename std::conditional<sizeof(CharT2) <= sizeof(CharT1), CharT1, CharT2>::type;
@@ -4383,10 +4383,10 @@ operator+(std::basic_string<CharT, Traits, Alloc> x, const string_literal<CharT,
                            && (!defined(__SUNPRO_CC) || __SUNPRO_CC > 0x5150)
 
 template <class CharT,
-  class = std::enable_if_t<std::is_same<CharT, char>::value ||
-                           std::is_same<CharT, wchar_t>::value ||
-                           std::is_same<CharT, char16_t>::value ||
-                           std::is_same<CharT, char32_t>::value>>
+    class = std::enable_if_t<std::is_same<CharT, char>::value ||
+        std::is_same<CharT, wchar_t>::value ||
+        std::is_same<CharT, char16_t>::value ||
+        std::is_same<CharT, char32_t>::value>>
 CONSTCD14
 inline
 string_literal<CharT, 2>
@@ -4413,10 +4413,10 @@ template <std::intmax_t N>
 CONSTCD14
 inline
 std::enable_if_t
-  <
-    N < 10,
-    string_literal<char, to_string_len(N)+1>
-  >
+    <
+        N < 10,
+        string_literal<char, to_string_len(N)+1>
+    >
 msl() NOEXCEPT
 {
   return msl(char(N % 10 + '0'));
@@ -4426,10 +4426,10 @@ template <std::intmax_t N>
 CONSTCD14
 inline
 std::enable_if_t
-  <
-    10 <= N,
-    string_literal<char, to_string_len(N)+1>
-  >
+    <
+        10 <= N,
+        string_literal<char, to_string_len(N)+1>
+    >
 msl() NOEXCEPT
 {
   return msl<N/10>() + msl(char(N % 10 + '0'));
@@ -4439,26 +4439,26 @@ template <class CharT, std::intmax_t N, std::intmax_t D>
 CONSTCD14
 inline
 std::enable_if_t
-  <
-    std::ratio<N, D>::type::den != 1,
-    string_literal<CharT, to_string_len(std::ratio<N, D>::type::num) +
-                          to_string_len(std::ratio<N, D>::type::den) + 4>
-  >
+    <
+        std::ratio<N, D>::type::den != 1,
+        string_literal<CharT, to_string_len(std::ratio<N, D>::type::num) +
+            to_string_len(std::ratio<N, D>::type::den) + 4>
+    >
 msl(std::ratio<N, D>) NOEXCEPT
 {
   using R = typename std::ratio<N, D>::type;
   return msl(CharT{'['}) + msl<R::num>() + msl(CharT{'/'}) +
-         msl<R::den>() + msl(CharT{']'});
+      msl<R::den>() + msl(CharT{']'});
 }
 
 template <class CharT, std::intmax_t N, std::intmax_t D>
 CONSTCD14
 inline
 std::enable_if_t
-  <
-    std::ratio<N, D>::type::den == 1,
-    string_literal<CharT, to_string_len(std::ratio<N, D>::type::num) + 3>
-  >
+    <
+        std::ratio<N, D>::type::den == 1,
+        string_literal<CharT, to_string_len(std::ratio<N, D>::type::num) + 3>
+    >
 msl(std::ratio<N, D>) NOEXCEPT
 {
   using R = typename std::ratio<N, D>::type;
@@ -4553,10 +4553,10 @@ template <class CharT>
 CONSTCD11
 inline
 typename std::enable_if
-  <
-    std::is_same<CharT, char>::value,
-    string_literal<char, 3>
-  >::type
+    <
+        std::is_same<CharT, char>::value,
+        string_literal<char, 3>
+    >::type
 msl(std::micro) NOEXCEPT
 {
   return string_literal<char, 3>{'\xC2', '\xB5'};
@@ -4566,10 +4566,10 @@ template <class CharT>
 CONSTCD11
 inline
 typename std::enable_if
-  <
-    !std::is_same<CharT, char>::value,
-    string_literal<CharT, 2>
-  >::type
+    <
+        !std::is_same<CharT, char>::value,
+        string_literal<CharT, 2>
+    >::type
 msl(std::micro) NOEXCEPT
 {
   return string_literal<CharT, 2>{CharT{static_cast<unsigned char>('\xB5')}};
@@ -4804,10 +4804,10 @@ struct fields
   fields(weekday wd_, hh_mm_ss<Duration> tod_) : wd(wd_), tod(tod_), has_tod(true) {}
 
   fields(year_month_day ymd_, weekday wd_, hh_mm_ss<Duration> tod_)
-    : ymd(ymd_)
-    , wd(wd_)
-    , tod(tod_)
-    , has_tod(true)
+      : ymd(ymd_)
+      , wd(wd_)
+      , tod(tod_)
+      , has_tod(true)
   {}
 };
 
@@ -5346,7 +5346,7 @@ to_stream(std::basic_ostream<CharT, Traits>& os, const CharT* fmt,
             auto ld = local_days(fds.ymd);
             auto y = year_month_day{ld + days{3}}.year();
             auto start = local_days((y-years{1})/December/Thursday[last]) +
-                         (Monday-Thursday);
+                (Monday-Thursday);
             if (ld < start)
               --y;
             if (*fmt == CharT{'G'})
@@ -5808,12 +5808,12 @@ to_stream(std::basic_ostream<CharT, Traits>& os, const CharT* fmt,
             {
               auto y = year_month_day{ld + days{3}}.year();
               auto st = local_days((y-years{1})/12/Thursday[last]) +
-                        (Monday-Thursday);
+                  (Monday-Thursday);
               if (ld < st)
               {
                 --y;
                 st = local_days((y - years{1})/12/Thursday[last]) +
-                     (Monday-Thursday);
+                    (Monday-Thursday);
               }
               auto wn = duration_cast<weeks>(ld - st).count() + 1;
               if (wn < 10)
@@ -6238,7 +6238,7 @@ template <class CharT, class Streamable>
 auto
 format(const std::locale& loc, const CharT* fmt, const Streamable& tp)
 -> decltype(to_stream(std::declval<std::basic_ostream<CharT>&>(), fmt, tp),
-  std::basic_string<CharT>{})
+    std::basic_string<CharT>{})
 {
   std::basic_ostringstream<CharT> os;
   os.exceptions(std::ios::failbit | std::ios::badbit);
@@ -6251,7 +6251,7 @@ template <class CharT, class Streamable>
 auto
 format(const CharT* fmt, const Streamable& tp)
 -> decltype(to_stream(std::declval<std::basic_ostream<CharT>&>(), fmt, tp),
-  std::basic_string<CharT>{})
+    std::basic_string<CharT>{})
 {
   std::basic_ostringstream<CharT> os;
   os.exceptions(std::ios::failbit | std::ios::badbit);
@@ -6264,7 +6264,7 @@ auto
 format(const std::locale& loc, const std::basic_string<CharT, Traits, Alloc>& fmt,
        const Streamable& tp)
 -> decltype(to_stream(std::declval<std::basic_ostream<CharT, Traits>&>(), fmt.c_str(), tp),
-  std::basic_string<CharT, Traits, Alloc>{})
+    std::basic_string<CharT, Traits, Alloc>{})
 {
   std::basic_ostringstream<CharT, Traits, Alloc> os;
   os.exceptions(std::ios::failbit | std::ios::badbit);
@@ -6277,7 +6277,7 @@ template <class CharT, class Traits, class Alloc, class Streamable>
 auto
 format(const std::basic_string<CharT, Traits, Alloc>& fmt, const Streamable& tp)
 -> decltype(to_stream(std::declval<std::basic_ostream<CharT, Traits>&>(), fmt.c_str(), tp),
-  std::basic_string<CharT, Traits, Alloc>{})
+    std::basic_string<CharT, Traits, Alloc>{})
 {
   std::basic_ostringstream<CharT, Traits, Alloc> os;
   os.exceptions(std::ios::failbit | std::ios::badbit);
@@ -6369,7 +6369,7 @@ read_long_double(std::basic_istream<CharT, Traits>& is, unsigned m = 1, unsigned
   typename Traits::int_type decimal_point = '.';
 #else
   auto decimal_point = Traits::to_int_type(
-    std::use_facet<std::numpunct<CharT>>(is.getloc()).decimal_point());
+      std::use_facet<std::numpunct<CharT>>(is.getloc()).decimal_point());
 #endif
   while (true)
   {
@@ -7578,7 +7578,7 @@ from_stream(std::basic_istream<CharT, Traits>& is, const CharT* fmt,
                 auto c = static_cast<char>(wc);
                 // is c a valid time zone name or abbreviation character?
                 if (!(CharT{1} < wc && wc < CharT{127}) || !(isalnum(c) ||
-                                                             c == '_' || c == '/' || c == '-' || c == '+'))
+                    c == '_' || c == '/' || c == '-' || c == '+'))
                   break;
                 buf.push_back(c);
                 is.rdbuf()->sbumpc();
@@ -7702,8 +7702,8 @@ from_stream(std::basic_istream<CharT, Traits>& is, const CharT* fmt,
       if (G != not_a_year && V != not_a_week_num && wd != not_a_weekday)
       {
         year_month_day ymd_trial = sys_days(year{G-1}/December/Thursday[last]) +
-                                   (Monday-Thursday) + weeks{V-1} +
-                                   (weekday{static_cast<unsigned>(wd)}-Monday);
+            (Monday-Thursday) + weeks{V-1} +
+            (weekday{static_cast<unsigned>(wd)}-Monday);
         if (Y == not_a_year)
           Y = static_cast<int>(ymd_trial.year());
         else if (year{Y} != ymd_trial.year())
@@ -7721,8 +7721,8 @@ from_stream(std::basic_istream<CharT, Traits>& is, const CharT* fmt,
       if (Y != not_a_year && U != not_a_week_num && wd != not_a_weekday)
       {
         year_month_day ymd_trial = sys_days(year{Y}/January/Sunday[1]) +
-                                   weeks{U-1} +
-                                   (weekday{static_cast<unsigned>(wd)} - Sunday);
+            weeks{U-1} +
+            (weekday{static_cast<unsigned>(wd)} - Sunday);
         if (Y == not_a_year)
           Y = static_cast<int>(ymd_trial.year());
         else if (year{Y} != ymd_trial.year())
@@ -7740,8 +7740,8 @@ from_stream(std::basic_istream<CharT, Traits>& is, const CharT* fmt,
       if (Y != not_a_year && W != not_a_week_num && wd != not_a_weekday)
       {
         year_month_day ymd_trial = sys_days(year{Y}/January/Monday[1]) +
-                                   weeks{W-1} +
-                                   (weekday{static_cast<unsigned>(wd)} - Monday);
+            weeks{W-1} +
+            (weekday{static_cast<unsigned>(wd)} - Monday);
         if (Y == not_a_year)
           Y = static_cast<int>(ymd_trial.year());
         else if (year{Y} != ymd_trial.year())
@@ -7783,13 +7783,13 @@ from_stream(std::basic_istream<CharT, Traits>& is, const CharT* fmt,
             sys_days sd = ymd;
             auto G_trial = year_month_day{sd + days{3}}.year();
             auto start = sys_days((G_trial - years{1})/December/Thursday[last]) +
-                         (Monday - Thursday);
+                (Monday - Thursday);
             if (sd < start)
             {
               --G_trial;
               if (V != not_a_week_num)
                 start = sys_days((G_trial - years{1})/December/Thursday[last])
-                        + (Monday - Thursday);
+                    + (Monday - Thursday);
             }
             if (G != not_a_year && G != static_cast<int>(G_trial))
               goto broken;
@@ -8056,7 +8056,7 @@ from_stream(std::basic_istream<CharT, Traits>& is, const CharT* fmt,
 }
 
 template <class Parsable, class CharT, class Traits = std::char_traits<CharT>,
-  class Alloc = std::allocator<CharT>>
+    class Alloc = std::allocator<CharT>>
 struct parse_manip
 {
   const std::basic_string<CharT, Traits, Alloc> format_;
@@ -8064,34 +8064,34 @@ struct parse_manip
   std::basic_string<CharT, Traits, Alloc>*      abbrev_;
   std::chrono::minutes*                         offset_;
 
-public:
+ public:
   parse_manip(std::basic_string<CharT, Traits, Alloc> format, Parsable& tp,
               std::basic_string<CharT, Traits, Alloc>* abbrev = nullptr,
               std::chrono::minutes* offset = nullptr)
-    : format_(std::move(format))
-    , tp_(tp)
-    , abbrev_(abbrev)
-    , offset_(offset)
+      : format_(std::move(format))
+      , tp_(tp)
+      , abbrev_(abbrev)
+      , offset_(offset)
   {}
 
 #if HAS_STRING_VIEW
   parse_manip(const CharT* format, Parsable& tp,
-              std::basic_string<CharT, Traits, Alloc>* abbrev = nullptr,
-              std::chrono::minutes* offset = nullptr)
-    : format_(format)
-    , tp_(tp)
-    , abbrev_(abbrev)
-    , offset_(offset)
-  {}
+                std::basic_string<CharT, Traits, Alloc>* abbrev = nullptr,
+                std::chrono::minutes* offset = nullptr)
+        : format_(format)
+        , tp_(tp)
+        , abbrev_(abbrev)
+        , offset_(offset)
+        {}
 
-  parse_manip(std::basic_string_view<CharT, Traits> format, Parsable& tp,
-              std::basic_string<CharT, Traits, Alloc>* abbrev = nullptr,
-              std::chrono::minutes* offset = nullptr)
-    : format_(format)
-    , tp_(tp)
-    , abbrev_(abbrev)
-    , offset_(offset)
-  {}
+    parse_manip(std::basic_string_view<CharT, Traits> format, Parsable& tp,
+                std::basic_string<CharT, Traits, Alloc>* abbrev = nullptr,
+                std::chrono::minutes* offset = nullptr)
+        : format_(format)
+        , tp_(tp)
+        , abbrev_(abbrev)
+        , offset_(offset)
+        {}
 #endif  // HAS_STRING_VIEW
 };
 
@@ -8109,7 +8109,7 @@ auto
 parse(const std::basic_string<CharT, Traits, Alloc>& format, Parsable& tp)
 -> decltype(date::from_stream(std::declval<std::basic_istream<CharT, Traits>&>(),
                               format.c_str(), tp),
-  parse_manip<Parsable, CharT, Traits, Alloc>{format, tp})
+    parse_manip<Parsable, CharT, Traits, Alloc>{format, tp})
 {
   return {format, tp};
 }
@@ -8121,7 +8121,7 @@ parse(const std::basic_string<CharT, Traits, Alloc>& format, Parsable& tp,
       std::basic_string<CharT, Traits, Alloc>& abbrev)
 -> decltype(date::from_stream(std::declval<std::basic_istream<CharT, Traits>&>(),
                               format.c_str(), tp, &abbrev),
-  parse_manip<Parsable, CharT, Traits, Alloc>{format, tp, &abbrev})
+    parse_manip<Parsable, CharT, Traits, Alloc>{format, tp, &abbrev})
 {
   return {format, tp, &abbrev};
 }
@@ -8135,7 +8135,7 @@ parse(const std::basic_string<CharT, Traits, Alloc>& format, Parsable& tp,
                               format.c_str(), tp,
                               std::declval<std::basic_string<CharT, Traits, Alloc>*>(),
                               &offset),
-  parse_manip<Parsable, CharT, Traits, Alloc>{format, tp, nullptr, &offset})
+    parse_manip<Parsable, CharT, Traits, Alloc>{format, tp, nullptr, &offset})
 {
   return {format, tp, nullptr, &offset};
 }
@@ -8147,7 +8147,7 @@ parse(const std::basic_string<CharT, Traits, Alloc>& format, Parsable& tp,
       std::basic_string<CharT, Traits, Alloc>& abbrev, std::chrono::minutes& offset)
 -> decltype(date::from_stream(std::declval<std::basic_istream<CharT, Traits>&>(),
                               format.c_str(), tp, &abbrev, &offset),
-  parse_manip<Parsable, CharT, Traits, Alloc>{format, tp, &abbrev, &offset})
+    parse_manip<Parsable, CharT, Traits, Alloc>{format, tp, &abbrev, &offset})
 {
   return {format, tp, &abbrev, &offset};
 }
@@ -8159,7 +8159,7 @@ inline
 auto
 parse(const CharT* format, Parsable& tp)
 -> decltype(date::from_stream(std::declval<std::basic_istream<CharT>&>(), format, tp),
-  parse_manip<Parsable, CharT>{format, tp})
+    parse_manip<Parsable, CharT>{format, tp})
 {
   return {format, tp};
 }
@@ -8170,7 +8170,7 @@ auto
 parse(const CharT* format, Parsable& tp, std::basic_string<CharT, Traits, Alloc>& abbrev)
 -> decltype(date::from_stream(std::declval<std::basic_istream<CharT, Traits>&>(), format,
                               tp, &abbrev),
-  parse_manip<Parsable, CharT, Traits, Alloc>{format, tp, &abbrev})
+    parse_manip<Parsable, CharT, Traits, Alloc>{format, tp, &abbrev})
 {
   return {format, tp, &abbrev};
 }
@@ -8181,7 +8181,7 @@ auto
 parse(const CharT* format, Parsable& tp, std::chrono::minutes& offset)
 -> decltype(date::from_stream(std::declval<std::basic_istream<CharT>&>(), format,
                               tp, std::declval<std::basic_string<CharT>*>(), &offset),
-  parse_manip<Parsable, CharT>{format, tp, nullptr, &offset})
+    parse_manip<Parsable, CharT>{format, tp, nullptr, &offset})
 {
   return {format, tp, nullptr, &offset};
 }
@@ -8193,7 +8193,7 @@ parse(const CharT* format, Parsable& tp,
       std::basic_string<CharT, Traits, Alloc>& abbrev, std::chrono::minutes& offset)
 -> decltype(date::from_stream(std::declval<std::basic_istream<CharT, Traits>&>(), format,
                               tp, &abbrev, &offset),
-  parse_manip<Parsable, CharT, Traits, Alloc>{format, tp, &abbrev, &offset})
+    parse_manip<Parsable, CharT, Traits, Alloc>{format, tp, &abbrev, &offset})
 {
   return {format, tp, &abbrev, &offset};
 }
@@ -8206,10 +8206,10 @@ template <class Parsable, class CharT, class Traits>
 inline
 auto
 parse(std::basic_string_view<CharT, Traits> format, Parsable& tp)
--> decltype(date::from_stream(std::declval<std::basic_istream<CharT, Traits>&>(), format.data(), tp),
-  parse_manip<Parsable, CharT, Traits>{format, tp})
+    -> decltype(date::from_stream(std::declval<std::basic_istream<CharT, Traits>&>(), format.data(), tp),
+                parse_manip<Parsable, CharT, Traits>{format, tp})
 {
-  return {format, tp};
+    return {format, tp};
 }
 
 template <class Parsable, class CharT, class Traits, class Alloc>
@@ -8217,22 +8217,22 @@ inline
 auto
 parse(std::basic_string_view<CharT, Traits> format,
       Parsable& tp, std::basic_string<CharT, Traits, Alloc>& abbrev)
--> decltype(date::from_stream(std::declval<std::basic_istream<CharT, Traits>&>(), format.data(),
-                              tp, &abbrev),
-  parse_manip<Parsable, CharT, Traits, Alloc>{format, tp, &abbrev})
+    -> decltype(date::from_stream(std::declval<std::basic_istream<CharT, Traits>&>(), format.data(),
+                            tp, &abbrev),
+                parse_manip<Parsable, CharT, Traits, Alloc>{format, tp, &abbrev})
 {
-  return {format, tp, &abbrev};
+    return {format, tp, &abbrev};
 }
 
 template <class Parsable, class CharT, class Traits>
 inline
 auto
 parse(std::basic_string_view<CharT, Traits> format, Parsable& tp, std::chrono::minutes& offset)
--> decltype(date::from_stream(std::declval<std::basic_istream<CharT, Traits>&>(), format.data(),
-                              tp, std::declval<std::basic_string<CharT, Traits>*>(), &offset),
-  parse_manip<Parsable, CharT, Traits>{format, tp, nullptr, &offset})
+    -> decltype(date::from_stream(std::declval<std::basic_istream<CharT, Traits>&>(), format.data(),
+                            tp, std::declval<std::basic_string<CharT, Traits>*>(), &offset),
+                parse_manip<Parsable, CharT, Traits>{format, tp, nullptr, &offset})
 {
-  return {format, tp, nullptr, &offset};
+    return {format, tp, nullptr, &offset};
 }
 
 template <class Parsable, class CharT, class Traits, class Alloc>
@@ -8240,11 +8240,11 @@ inline
 auto
 parse(std::basic_string_view<CharT, Traits> format, Parsable& tp,
       std::basic_string<CharT, Traits, Alloc>& abbrev, std::chrono::minutes& offset)
--> decltype(date::from_stream(std::declval<std::basic_istream<CharT, Traits>&>(), format.data(),
-                              tp, &abbrev, &offset),
-  parse_manip<Parsable, CharT, Traits, Alloc>{format, tp, &abbrev, &offset})
+    -> decltype(date::from_stream(std::declval<std::basic_istream<CharT, Traits>&>(), format.data(),
+                            tp, &abbrev, &offset),
+                parse_manip<Parsable, CharT, Traits, Alloc>{format, tp, &abbrev, &offset})
 {
-  return {format, tp, &abbrev, &offset};
+    return {format, tp, &abbrev, &offset};
 }
 
 #endif  // HAS_STRING_VIEW
@@ -8258,7 +8258,7 @@ operator<<(std::basic_ostream<CharT, Traits>& os,
            const std::chrono::duration<Rep, Period>& d)
 {
   return os << detail::make_string<CharT, Traits>::from(d.count()) +
-               detail::get_units<CharT>(typename Period::type{});
+      detail::get_units<CharT>(typename Period::type{});
 }
 
 }  // namespace date
