@@ -44,7 +44,7 @@ public:
   explicit Mapora(const rclcpp::NodeOptions & options);
 
   void process();
-
+  
   // params
   double imu2lidar_roll;
   double imu2lidar_pitch;
@@ -71,7 +71,6 @@ private:
 
   std::unique_ptr<tf2_ros::TransformBroadcaster> tf_broadcaster_;
   transform_provider_applanix::TransformProviderApplanix::Pose pose;
-
 };
 }  // namespace mapora
 

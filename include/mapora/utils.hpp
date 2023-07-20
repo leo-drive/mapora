@@ -25,7 +25,6 @@
 
 namespace mapora::utils
 {
-
 class Utils
 {
 public:

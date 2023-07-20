@@ -1,0 +1,8 @@
+/**:
+  ros__parameters:
+    index_pcap_start: 15
+    count_pcaps_to_process: 1
+    count_clouds_to_extract_max: 5
+#    index_pcap_start: 15
+#    count_pcaps_to_process: 1
+#    count_clouds_to_extract_max: 50

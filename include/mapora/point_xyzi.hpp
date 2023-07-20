@@ -13,6 +13,7 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
  */
+
 #ifndef MAPORA__POINT_XYZI_HPP_
 #define MAPORA__POINT_XYZI_HPP_
 

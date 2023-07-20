@@ -13,8 +13,8 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
  */
-#include "mapora/utils.hpp"
 
+#include "mapora/utils.hpp"
 #include <iomanip>
 #include <string>
 #include <sstream>
@@ -22,7 +22,6 @@
 
 namespace mapora::utils
 {
-
 std::string Utils::byte_hex_to_string(uint8_t byte_hex)
 {
   std::stringstream ss;
@@ -54,7 +53,4 @@ std::vector<std::string> Utils::string_to_vec_split_by(
   }
   return seglist;
 }
-
-
-
 }  // namespace mapora::utils

@@ -32,7 +32,6 @@
 #include <string>
 #include <vector>
 
-
 namespace
 {
 const std::uint32_t QOS_HISTORY_DEPTH = 10;
@@ -243,11 +242,7 @@ void Mapora::process()
   for (auto & cloud : clouds) {
     process_cloud_single(cloud);
   }
-}
 
-void Mapora::callback_cloud_surround_out(const Mapora::Points & points_surround)
-{
-  clouds.push_back(points_surround);
 }
 
 sensor_msgs::msg::PointCloud2::SharedPtr Mapora::points_to_cloud(
@@ -268,7 +263,6 @@ sensor_msgs::msg::PointCloud2::SharedPtr Mapora::points_to_cloud(
     });
   return cloud_ptr_current;
 }
-
 }  // namespace mapora
 #include "rclcpp_components/register_node_macro.hpp"
 RCLCPP_COMPONENTS_REGISTER_NODE(mapora::Mapora)
