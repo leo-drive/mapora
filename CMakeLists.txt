@@ -10,7 +10,7 @@ find_package(ament_cmake_auto REQUIRED)
 ament_auto_find_build_dependencies()
 
 find_package(Boost 1.74 COMPONENTS filesystem
-        iostreams system thread program_options REQUIRED)
+        serialization iostreams system thread program_options REQUIRED)
 find_package(Eigen3 REQUIRED)
 find_package(libLAS REQUIRED)
 find_package(PcapPlusPlus REQUIRED)
