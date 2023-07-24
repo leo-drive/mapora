@@ -69,6 +69,23 @@ The example data collection is made with the car in below images.
 - [TBB](https://github.com/wjakob/tbb.git)
 - [PcapPlusPlus](https://pcapplusplus.github.io/docs/install#build-from-source)
 
+## Installation
+
+Install some dependencies with apt-get:
+```
+sudo apt-get install libgeotiff-dev libboost-all-dev libeigen3-dev libpcap-dev
+```
+
+Run build.sh script to install thirdparty libraries:
+```
+sudo ./scripts/build.sh
+```
+
+Install ROS2 dependencies:
+```
+sudo apt install ros-humble-point-cloud-msg-wrapper ros-humble-tf2-ros ros-humble-tf2
+```
+
 ## Input Files
 | Input     | Description |
 |-----------| ----------- |
