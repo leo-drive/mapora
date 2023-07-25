@@ -22,14 +22,14 @@ Some of the views of the point clouds can be seen below.
 
 
 ## Data Collection Procedure
-For data collection, a Velodyne VLP16 and an Applanix PosLVX is needed.
+For data collection, a Velodyne VLP16 and an Applanix POS LVX is needed.
 These 2 sensors needed to be connected to each other with PPS cable. In that way,
 the needed time information is provided into the VLP16.
 
 Basically, the data can be collected with a Mobile Mapping System (MMS).
 A sensor setup is needed for this procedure. With the system, fixed position sensors are provided.
 A computer is able to collect PCAP for point cloud data comes from Velodyne VLP16 and GNSS/INS positions
-comes from Applanix PosLVX via ethernet. Additionally, from the web user interface of the Applanix PosLVX
+comes from Applanix POS LVX via ethernet. Additionally, from the web user interface of the Applanix POS LVX
 GNSS should be collected for post-processing the GNSS/INS positions to get better accuracy.
 The example data collection is made with the car in below images.
 
@@ -51,7 +51,7 @@ The example data collection is made with the car in below images.
     for program provided in PCAPs.
 
 
-- Applanix PosLVX GNSS/INS
+- Applanix POS LVX GNSS/INS
   - The other needed data is GNSS position .txt data. These can be got in any way. Any software or
     library that can extract GNSS/INS positions in the read format of Mapora can be used.
   - One of the preferable way to get te GNSS/INS position .txt data is written below.
