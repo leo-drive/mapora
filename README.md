@@ -67,6 +67,7 @@ The example data collection is made with the car in below images.
 - Boost
 - [libLAS](https://liblas.org/start.html#installation)
 - [TBB](https://github.com/wjakob/tbb.git)
+- [oneTBB](https://github.com/oneapi-src/oneTBB.git)
 - [PcapPlusPlus](https://pcapplusplus.github.io/docs/install#build-from-source)
 
 ## Installation & Build
@@ -84,6 +85,12 @@ sudo ./scripts/build.sh
 Install ROS2 dependencies:
 ```
 sudo apt install ros-humble-point-cloud-msg-wrapper ros-humble-tf2-ros ros-humble-tf2
+```
+
+Create the ROS2 workspace:
+```
+mkdir -p ~/projects/mapora_ws/src
+cd ~/projects/mapora_ws/src
 ```
 
 Build the ROS2 environment:
