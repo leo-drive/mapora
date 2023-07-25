@@ -69,7 +69,7 @@ The example data collection is made with the car in below images.
 - [TBB](https://github.com/wjakob/tbb.git)
 - [PcapPlusPlus](https://pcapplusplus.github.io/docs/install#build-from-source)
 
-## Installation
+## Installation & Build
 
 Install some dependencies with apt-get:
 ```
@@ -84,6 +84,11 @@ sudo ./scripts/build.sh
 Install ROS2 dependencies:
 ```
 sudo apt install ros-humble-point-cloud-msg-wrapper ros-humble-tf2-ros ros-humble-tf2
+```
+
+Build the ROS2 environment:
+```
+colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_EXPORT_COMPILE_COMMANDS=1
 ```
 
 ## Input Files
@@ -103,7 +108,7 @@ PCAP files can be seperated or can be only one piece. If it is one piece, then p
 So, it is highly recommended to divide the PCAP files. It can be made with below command via Wireshark API.
 
 ```
-editcap -c 1000 input.pcap output.pcap
+editcap -c 1000 <input.pcap> <output.pcap>
 ```
 It takes input PCAP and exports the seperated PCAP with file indexes like ```output_{index}_{timestamp}.pcap```.
 
