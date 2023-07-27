@@ -72,13 +72,25 @@ The example data collection is made with the car in below images.
 
 ## Installation & Build
 
+Create the ROS2 workspace:
+```
+mkdir -p <project_dir>/mapora_ws/src
+cd <project_dir>/mapora_ws/src
+```
+Clone the Mapora repository:
+```
+git clone https://github.com/leo-drive/mapora.git
+```
+
+### Build on Your Local Computer
 Install some dependencies with apt-get:
 ```
 sudo apt-get install libgeotiff-dev libboost-all-dev libeigen3-dev libpcap-dev
 ```
 
-Run build.sh script to install thirdparty libraries:
+Go to the ```mapora``` package directory and run build.sh script to install thirdparty libraries:
 ```
+cd <project_dir>/mapora_ws/src/mapora
 sudo ./scripts/build.sh
 ```
 
@@ -87,16 +99,25 @@ Install ROS2 dependencies:
 sudo apt install ros-humble-point-cloud-msg-wrapper ros-humble-tf2-ros ros-humble-tf2
 ```
 
-Create the ROS2 workspace:
-```
-mkdir -p ~/projects/mapora_ws/src
-cd ~/projects/mapora_ws/src
-```
-
 Build the ROS2 environment:
 ```
 colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_EXPORT_COMPILE_COMMANDS=1
 ```
+
+### Build with Docker
+Go to ```docker``` directory inside the ```mapora``` package and build the docker image:
+```
+cd <project_dir>/mapora_ws/src/mapora/docker
+docker image build -t mapora .
+```
+Go to the ```mapora``` package directory and create a container from the image with ```example_data``` directory:
+Please don't forget to download the example data.
+The example data is provided [below](https://github.com/leo-drive/mapora#example-data).
+```
+cd ..
+docker run -it -v $(pwd)/example_data/:/root/mapora_ws/src/mapora/example_data mapora
+```
+
 
 ## Input Files
 | Input     | Description |
@@ -114,12 +135,23 @@ To running the Mapora, PCAP files collected with Velodyne VLP16 and GNSS poses t
 PCAP files can be seperated or can be only one piece. If it is one piece, then program may fail depending on your RAM size.
 So, it is highly recommended to divide the PCAP files. It can be made with below command via Wireshark API.
 
+### Run on Local Machine
 ```
 editcap -c 1000 <input.pcap> <output.pcap>
 ```
 It takes input PCAP and exports the seperated PCAP with file indexes like ```output_{index}_{timestamp}.pcap```.
 
 After filling the ```params/mapora_params.yaml```, the program can be executed with:
+```
+ros2 launch mapora mapora_launch.py
+```
+
+### Run on Docker
+Once you have builded the Docker image and the Docker container, you can get into the container with below command.
+```
+docker run -it -v $(pwd)/example_data/:/root/mapora_ws/src/mapora/example_data mapora
+```
+After that Mapora can be used.
 ```
 ros2 launch mapora mapora_launch.py
 ```
