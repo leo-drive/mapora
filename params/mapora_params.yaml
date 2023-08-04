@@ -6,6 +6,6 @@
     las_export_directory: src/mapora/example_data/output_las/
     max_point_distance_from_lidar: 60.0  # in meters
     min_point_distance_from_lidar: 3.0  # in meters
-    r_x: -179.643
-    r_y: -0.404
-    r_z: -0.778
+    r_x: 179.59
+    r_y: -0.42
+    r_z: 0.39

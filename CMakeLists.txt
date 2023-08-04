@@ -54,7 +54,7 @@ target_link_libraries(${PROJECT_NAME}
         ${Boost_LIBRARIES}
         Eigen3::Eigen
         PcapPlusPlus::PcapPlusPlus
-        ${TBB_LIBRARIES}
+        TBB::tbb
         ${libLAS_LIBRARIES})
 
 #target_compile_options(${PROJECT_NAME} PRIVATE

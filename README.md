@@ -66,8 +66,7 @@ The example data collection is made with the car in below images.
 - Eigen3
 - Boost
 - [libLAS](https://liblas.org/start.html#installation)
-- [TBB](https://github.com/wjakob/tbb.git)
-- [oneTBB](https://github.com/oneapi-src/oneTBB.git)
+- [TBB](https://github.com/oneapi-src/oneTBB.git)
 - [PcapPlusPlus](https://pcapplusplus.github.io/docs/install#build-from-source)
 
 ## Installation & Build
@@ -130,7 +129,7 @@ docker run -it -v $(pwd)/example_data/:/root/mapora_ws/src/mapora/example_data m
 |----------------------| ----------- |
 | **Point Clouds**     | Georeferenced **.las** formatted point cloud files. |
 
-## Run the Mapora
+## Run Mapora
 To running the Mapora, PCAP files collected with Velodyne VLP16 and GNSS poses taken from Applanix PosLVX are needed.
 PCAP files can be seperated or can be only one piece. If it is one piece, then program may fail depending on your RAM size.
 So, it is highly recommended to divide the PCAP files. It can be made with below command via Wireshark API.
