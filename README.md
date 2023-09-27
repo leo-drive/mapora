@@ -129,6 +129,37 @@ docker run -it -v $(pwd)/example_data/:/root/mapora_ws/src/mapora/example_data m
 |----------------------| ----------- |
 | **Point Clouds**     | Georeferenced **.las** formatted point cloud files. |
 
+## LiDAR - IMU Calibration
+When you are working with Mapora, you need to provide the calibration parameters of your LiDAR and IMU in `params/mapora_params.yaml`. We are providing a calibration tool as a thirdparty library developed by [APRIL LAB](https://github.com/APRIL-ZJU).
+
+[The tool](https://github.com/leo-drive/OA-LICalib) which is used for calibration is developed with ROS1, and it depends on a lots of third party libraries. Because of that, we recommend you to use the docker image which is provided from us.
+
+Firstly, you need to clone the calibration tool repository:
+```shell
+git clone https://github.com/leo-drive/OA-LICalib.git thirdparty/OA-LICalib
+```
+
+Then, you need to build the docker image:
+```shell
+cd thirdparty/OA-LICalib/docker
+docker image build -t calib:v1 .
+```
+
+After that, you need to create a container from the image:
+```shell
+export REPO_PATH="<project_dir>/mapora_ws/src/mapora/thirdparty/OA-LICalib/"
+docker run -it --env="DISPLAY" --volume="$HOME/.Xauthority:/root/.Xauthority:rw" --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" --volume="$REPO_PATH:/root/calib_ws/src/OA-LICalib" calib:v1 bash
+```
+
+Finally, you can install your ROS1 workspace and run the calibration tool:
+```shell
+cd catkin_oa_calib/
+catkin_make -DCATKIN_WHITELIST_PACKAGES=""
+
+source ./devel/setup.bash
+roslaunch oa_licalib li_calib.launch
+```
+
 ## Run Mapora
 To running the Mapora, PCAP files collected with Velodyne VLP16 and GNSS poses taken from Applanix PosLVX are needed.
 PCAP files can be seperated or can be only one piece. If it is one piece, then program may fail depending on your RAM size.
