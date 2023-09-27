@@ -21,7 +21,7 @@ Some of the views of the point clouds can be seen below.
 
 
 
-## Data Collection Procedure
+## Data Collection Procedure for Mapping 
 For data collection, a Velodyne VLP16 and an Applanix POS LVX is needed.
 These 2 sensors needed to be connected to each other with PPS cable. In that way,
 the needed time information is provided into the VLP16.
@@ -38,6 +38,40 @@ The example data collection is made with the car in below images.
   <img src="images/mapora_setup2.png" alt="mapora_setup2" height="200px"/>
 </p>
 
+## Data Collection Procedure for LiDAR - IMU Calibration
+For LiDAR - IMU calibration, there is a need for a ROS1 bag file which contains `sensor_msgs/PointCloud2` and `sensor_msgs/Imu` messages. To obtain good results as a result of the calibration process, you need to move the sensors in all 6 axes (x, y, z, roll, pitch, yaw) while collecting data. Therefore, holding the sensors in your hand while data collection will get better results, but you can also collect data on the vehicle.
+
+Moreover, the calibration accuracy is affected by the data collection environment. You should collect your data in a place that contains a lot of flat surfaces, and indoor spaces are the best locations under these conditions. However, you can also achieve good results outdoors. When collecting data, make sure to draw figures of eights and grids, capturing data from every angle
+
+<p align="center">
+  <img src="images/calib_data-collection.png" alt="mapora_setup1" height="200px"/>
+</p>
+
+### Converting ROS2 Bag File to ROS1 Bag File
+If you collected your calibration data in ROS2, you can convert it to ROS1 bag file with the following instructions:
+
+Split your ROS2 bag file if it contains non-standard message topics (you can only select `sensor_msgs/PointCloud2` and `sensor_msgs/Imu` messages), and convert your splitted ROS2 bag file to ROS1 bag.
+
+1) Create a yaml file with name `out.yaml` which contains your lidar and imu topics:
+```
+output_bags:
+- uri: splitted_bag
+  topics: [/your/imu/topic, /your/pointcloud/topic]
+```
+
+2) Split your ROS2 bag file with the following command:
+```shell
+ros2 bag convert -i your_ros2_bag_folder -o out.yaml
+```
+
+3) Convert your splitted ROS2 bag file to ROS1 bag file:
+```shell
+# install bag converter tool (https://gitlab.com/ternaris/rosbags)
+pip3 install rosbags
+
+# convert bag
+rosbags-convert your_splitted_ros2_bag_folder --dst output_bag_file
+```
 
 ## System Requirements
 - PC which runs Ubuntu 22.04 (Ubuntu version must be at least 20.04)
