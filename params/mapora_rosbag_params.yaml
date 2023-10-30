@@ -1,0 +1,42 @@
+/mapora_rosbag:
+  ros__parameters:
+    ### project params
+    project_namespace: mapora_rosbag_project
+    las_export_directory: src/mapora/example_data/mapora_rosbag/output_las/
+    save_point_cloud_after_msgs: 30000
+
+    ### calibration params
+    # rotation
+    r_x: 0.19
+    r_y: -0.23
+    r_z: -178.15
+    # translation
+    t_x: 0.0
+    t_y: 0.0
+    t_z: 0.08
+
+    ### filter params
+    max_point_distance_from_lidar: 60.0  # in meters
+    min_point_distance_from_lidar: 3.0  # in meters
+    # position filter
+    err_pos_x: 0.06  # in meters
+    err_pos_y: 0.06  # in meters
+    err_pos_z: 0.10  # in meters
+    # rotation filter
+    err_rot_x: 0.04 # in degrees
+    err_rot_y: 0.04   # in degrees
+    err_rot_z: 0.12   # in degrees
+
+
+    ### point cloud distortion corrector params
+    correct_distortions: true
+    base_link_tf_name: base_link
+    lidar_tf_name: hesai_base_link
+    point_cloud_timestamp_field: timestamp
+
+    ### rosbag params
+    rosbag_path: src/mapora/example_data/mapora_rosbag/  # TODO: Add rosbag here
+    point_cloud_topic: /hesai/pandar
+    gnss_topic: /applanix/lvx_client/gnss/fix
+    imu_topic: /applanix/lvx_client/imu_raw
+    twist_with_covariance_stamped_topic: /applanix/lvx_client/twist_with_covariance
