@@ -87,9 +87,6 @@ The example data needs to be in the ```example_data/mapora_rosbag/``` directory 
 In ```params/mapora_rosbag_params.yaml``` file, the params are set to run the example data. You can observe the file paths in this file.
 After you put all data files into right directory which is ```example_data/mapora_rosbag/```, .las exports of the Mapora Rosbag would be in
 the ```example_data/mapora_rosbag/output_las/``` directory.
-```
-ros2 launch mapora mapora_launch.py
-```
 
 
 ## Params
