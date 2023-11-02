@@ -35,7 +35,7 @@
     point_cloud_timestamp_field: timestamp
 
     ### rosbag params
-    rosbag_path: src/mapora/example_data/mapora_rosbag/  # TODO: Add rosbag here
+    rosbag_path: src/mapora/example_data/mapora_rosbag/mapora_rosbag_public_bag
     point_cloud_topic: /hesai/pandar
     gnss_topic: /applanix/lvx_client/gnss/fix
     imu_topic: /applanix/lvx_client/imu_raw
