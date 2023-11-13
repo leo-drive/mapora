@@ -127,7 +127,7 @@ ros2 launch mapora mapora_launch.py
 
 ## Example Data
 To see how Mapora works, an example data directory is provided.
-[This link](https://drive.google.com/drive/folders/1RuBxHYMV7cQG5IW_brsrCt3bjpDQ-Hcw?usp=drive_link) contains the example data of the Mapora.
+[This link](https://drive.google.com/drive/folders/1bSqA4vwVO7HgxHp6Liqg-XA8kDZntslT?usp=drive_link) contains the example data of the Mapora.
 The example data needs to be in the ```example_data/``` directory in the Mapora package.
 In ```params/mapora_params.yaml``` file, the params are set to run the example data. You can observe the file paths in this file.
 After you put all data files into right directory which is ```example_data/```, .las exports of the Mapora would be in
