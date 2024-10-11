@@ -23,6 +23,8 @@
 #include <algorithm>
 #include <iostream>
 #include <Eigen/Geometry>
+#include <GeographicLib/TransverseMercatorExact.hpp>
+#include <GeographicLib/UTMUPS.hpp>
 #include "mapora/date.h"
 #include "mapora/utils.hpp"
 
@@ -223,18 +225,43 @@ void TransformProviderApplanix::process() {
       in.heading_std)) {
 
       Pose pose;
+      Imu imu;
       pose.pose_with_covariance.pose.position.set__x(in.easting);
       pose.pose_with_covariance.pose.position.set__y(in.northing);
       pose.pose_with_covariance.pose.position.set__z(in.ellipsoid_height);
-      Eigen::AngleAxisd angle_axis_x(utils::Utils::deg_to_rad(-in.roll+180), Eigen::Vector3d::UnitX());
-      Eigen::AngleAxisd angle_axis_y(utils::Utils::deg_to_rad(in.pitch), Eigen::Vector3d::UnitY());
-      Eigen::AngleAxisd angle_axis_z(utils::Utils::deg_to_rad(in.heading-90), Eigen::Vector3d::UnitZ());
+      Eigen::AngleAxisd angle_axis_x(utils::Utils::deg_to_rad(in.roll), Eigen::Vector3d::UnitY());
+      Eigen::AngleAxisd angle_axis_y(utils::Utils::deg_to_rad(in.pitch), Eigen::Vector3d::UnitX());
+      Eigen::AngleAxisd angle_axis_z(utils::Utils::deg_to_rad(-in.heading), Eigen::Vector3d::UnitZ());
+      pose.velocity.x = in.east_vel;
+      pose.velocity.y = in.north_vel;
+      pose.velocity.z = in.up_vel;
 
-      Eigen::Quaterniond q = (angle_axis_x * angle_axis_y * angle_axis_z);
+      Eigen::Quaterniond q = (angle_axis_z * angle_axis_y * angle_axis_x);
       pose.pose_with_covariance.pose.orientation.set__x(q.x());
       pose.pose_with_covariance.pose.orientation.set__y(q.y());
       pose.pose_with_covariance.pose.orientation.set__z(q.z());
       pose.pose_with_covariance.pose.orientation.set__w(q.w());
+
+      imu.imu.linear_acceleration.set__x(in.y_acceleration);
+      imu.imu.linear_acceleration.set__y(in.x_acceleration);
+      imu.imu.linear_acceleration.set__z(-in.z_acceleration);
+      std::array<double, 3> linear_acc_variances{
+          std::pow(in.east_std, 2),  std::pow(-in.north_std, 2), std::pow(-in.height_std, 2),
+      };
+      for (size_t i = 0; i < 3; ++i) {
+        imu.imu.linear_acceleration_covariance.at(i*4) = linear_acc_variances.at(i);
+      }
+
+      imu.imu.angular_velocity.set__x(in.y_angular_rate);
+      imu.imu.angular_velocity.set__y(in.x_angular_rate);
+      imu.imu.angular_velocity.set__z(-in.z_angular_rate);
+      std::array<double, 3> angular_rate_variances{
+          std::pow(in.pitch_std, 2),  std::pow(in.roll_std, 2), std::pow(-in.heading_std, 2),
+      };
+      for (size_t i = 0; i < 3; ++i) {
+        imu.imu.linear_acceleration_covariance.at(i*4) = linear_acc_variances.at(i);
+      }
+
 
       auto segments = utils::Utils::string_to_vec_split_by(mission_date, '/');
 
@@ -273,6 +300,9 @@ void TransformProviderApplanix::process() {
       for (size_t i = 0; i < 6; ++i) {
         pose.pose_with_covariance.covariance.at(i * 7) = variances.at(i);
       }
+      pose.meridian_convergence = compute_meridian_convergence(in.latitude, in.longitude);
+      imu_rotations_.push_back(imu);
+
       poses_.push_back(pose);
     }
   } catch (const std::exception &ex) {
@@ -297,4 +327,78 @@ TransformProviderApplanix::Pose TransformProviderApplanix::get_pose_at(
   size_t index = std::distance(poses_.begin(), iter_result);
   return poses_.at(index);
 }
+
+TransformProviderApplanix::Imu TransformProviderApplanix::get_imu_at(
+    uint32_t stamp_unix_seconds, uint32_t stamp_nanoseconds)
+{
+  Imu imu_search;
+
+  imu_search.stamp_unix_seconds = stamp_unix_seconds;
+  imu_search.stamp_nanoseconds = stamp_nanoseconds;
+  auto iter_result = std::lower_bound(
+      imu_rotations_.begin(), imu_rotations_.end(), imu_search, [](const Imu & p1, const Imu & p2) {
+        if (p1.stamp_unix_seconds == p2.stamp_unix_seconds) {
+          return p1.stamp_nanoseconds < p2.stamp_nanoseconds;
+        }
+        return p1.stamp_unix_seconds < p2.stamp_unix_seconds;
+      });
+
+  size_t index;
+
+  if (
+      iter_result == imu_rotations_.end() ||
+      iter_result->stamp_unix_seconds > stamp_unix_seconds + 1 ||
+      iter_result->stamp_nanoseconds > stamp_nanoseconds + 50000000) {
+    //    std::cerr << "Imu not found for timestamp: "
+    //              << stamp_unix_seconds << "." << stamp_nanoseconds << std::endl;
+    // Handle the error as needed, e.g., throw an exception, return a default pose, etc.
+    //    throw std::runtime_error("Imu not found");
+    index = last_index_imu;
+  } else {
+    index = std::distance(imu_rotations_.begin(), iter_result);
+    last_index_imu = index;
+  }
+
+
+  //  std::cout << "ind: " << index << std::endl;
+  return imu_rotations_.at(index);
+}
+std::vector<double> TransformProviderApplanix::parse_mgrs_coordinates(const std::string & mgrs_string) {
+  std::string mgrs_grid = mgrs_string.substr(0, 5);
+  std::string mgrs_x_str = mgrs_string.substr(5, 8);
+  std::string mgrs_y_str = mgrs_string.substr(13, 8);
+
+  double mgrs_x = std::stod(mgrs_x_str);
+  mgrs_x /= 1000;
+
+  double mgrs_y = std::stod(mgrs_y_str);
+  mgrs_y /= 1000;
+
+  return std::vector{mgrs_x, mgrs_y};
+}
+
+std::string TransformProviderApplanix::parse_mgrs_zone(const std::string & mgrs_string) {
+  return mgrs_string.substr(0, 5);
+}
+
+float TransformProviderApplanix::compute_meridian_convergence(double lat, double lon) {
+
+  double x, y;
+  int zone;
+  bool northp;
+
+  GeographicLib::UTMUPS::Forward(lat, lon, zone, northp, x, y);
+  double lambda0 = (zone - 1) * 6 - 180 + 3;
+
+  GeographicLib::TransverseMercatorExact tm(
+      GeographicLib::Constants::WGS84_a(),
+      GeographicLib::Constants::WGS84_f(),
+      lambda0);
+
+  double gamma, k;
+  tm.Forward(lambda0, lat, lon, x, y, gamma, k);
+
+  return gamma;
+}
+
 }  // mapora::transform_provider

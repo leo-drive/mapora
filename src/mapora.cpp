@@ -17,7 +17,7 @@
 #include "mapora/mapora.hpp"
 
 #include <Eigen/Geometry>
-#include <mapora/point_xyzi.hpp>
+#include <mapora/point_types.hpp>
 #include <mapora/utils.hpp>
 #include <point_cloud_msg_wrapper/point_cloud_msg_wrapper.hpp>
 #include <rclcpp/rclcpp.hpp>
@@ -79,19 +79,19 @@ Mapora::Mapora(const rclcpp::NodeOptions & options)
 
   // Velodyne Point Cloud Extraction
   RCLCPP_INFO(this->get_logger(), "Velodyne Point Cloud Provider started with the PCAP files in : %s", pcap_dir_path_.c_str());
-  points_provider_velodyne_vlp16 = std::make_shared<points_provider::PointsProviderVelodyneVlp16>(
-    pcap_dir_path_);
-  points_provider_velodyne_vlp16->process();
+  points_provider_ = std::make_shared<points_provider::PointsProvider>(
+    pcap_dir_path_, "hesai_xt32");
+  points_provider_->process();
 
   std::function<void(const Points &)> callback =
     std::bind(&Mapora::callback_cloud_surround_out, this, std::placeholders::_1);
   // time
   auto whole_process_start = std::chrono::high_resolution_clock::now();
-  for (int i = 0; i < points_provider_velodyne_vlp16->paths_pcaps_.size(); i++)
+  for (int i = 0; i < points_provider_->paths_pcaps_.size(); i++)
   {
     auto start = std::chrono::high_resolution_clock::now();
     RCLCPP_INFO(this->get_logger(), "Processing the %d. pcap file.", i);
-    points_provider_velodyne_vlp16->process_pcaps_into_clouds(
+    points_provider_->process_pcaps_into_clouds(
       callback, i, 1,min_point_distance_from_lidar_, max_point_distance_from_lidar_);
 //    future_process = std::async(std::launch::async, &Mapora::process, this);
     process();
@@ -135,7 +135,7 @@ void Mapora::process()
       points_bad.cbegin(),
       points_bad.cend(),
       cloud_modifier_current.begin(),
-      [](const points_provider::PointsProviderVelodyneVlp16::Point & point_bad) {
+      [](const points_provider::PointsProvider::Point & point_bad) {
         return point_types::PointXYZI{
           point_bad.x, point_bad.y, point_bad.z, static_cast<float>(point_bad.intensity)};
       });
@@ -145,7 +145,7 @@ void Mapora::process()
   nav_msgs::msg::Path path_applanix;
   path_applanix.header.frame_id = "map";
 
-  points_provider::PointsProviderVelodyneVlp16::Points cloud_all;
+  points_provider::PointsProvider::Points cloud_all;
 
   path_applanix.poses.resize(transform_provider_applanix->poses_.size());
   std::cout << "transform_provider_applanix->poses_.size(): " << transform_provider_applanix->poses_.size() << std::endl;
@@ -155,9 +155,9 @@ void Mapora::process()
   pub_ptr_path_applanix_->publish(path_applanix);
 
   std::cout << "Point Cloud: " << file_counter << std::endl;
-  auto process_cloud_single = [&](const points_provider::PointsProviderVelodyneVlp16::Points& cloud){
+  auto process_cloud_single = [&](const points_provider::PointsProvider::Points& cloud){
 
-    points_provider::PointsProviderVelodyneVlp16::Points cloud_trans;
+    points_provider::PointsProvider::Points cloud_trans;
     cloud_trans.resize(cloud.size());
 
     std::transform(
@@ -165,8 +165,8 @@ void Mapora::process()
       cloud.cbegin(),
       cloud.cend(),
       cloud_trans.begin(),
-      [this, &path_applanix](const points_provider::PointsProviderVelodyneVlp16::Point & point) {
-        points_provider::PointsProviderVelodyneVlp16::Point point_trans;
+      [this, &path_applanix](const points_provider::PointsProvider::Point & point) {
+        points_provider::PointsProvider::Point point_trans;
 
         // position from applanix data is taken into pose below according to the stamps .
         pose = transform_provider_applanix->get_pose_at(point.stamp_unix_seconds, point.stamp_nanoseconds);
@@ -262,7 +262,7 @@ sensor_msgs::msg::PointCloud2::SharedPtr Mapora::points_to_cloud(
     points_bad.cbegin(),
     points_bad.cend(),
     cloud_modifier_current.begin(),
-    [](const points_provider::PointsProviderVelodyneVlp16::Point & point_bad) {
+    [](const points_provider::PointsProvider::Point & point_bad) {
       return point_types::PointXYZI{
         point_bad.x, point_bad.y, point_bad.z, static_cast<float>(point_bad.intensity)};
     });

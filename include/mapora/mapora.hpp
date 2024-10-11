@@ -39,7 +39,8 @@ public:
   using SharedPtr = std::shared_ptr<Mapora>;
   using ConstSharedPtr = const std::shared_ptr<Mapora>;
   using PointCloud2 = sensor_msgs::msg::PointCloud2;
-  using Points = points_provider::PointsProviderBase::Points;
+  using Point = point_types::PointXYZITRH;
+  using Points = std::vector<Point>;
 
   explicit Mapora(const rclcpp::NodeOptions & options);
 
@@ -56,14 +57,14 @@ public:
   double min_point_distance_from_lidar_;
   std::string las_export_dir;
 
-  std::vector<points_provider::PointsProviderVelodyneVlp16::Points> clouds;
+  std::vector<Points> clouds;
 
 private:
   rclcpp::Publisher<PointCloud2>::SharedPtr pub_ptr_cloud_current_;
   rclcpp::Publisher<nav_msgs::msg::Path>::SharedPtr pub_ptr_path_applanix_;
 
   transform_provider_applanix::TransformProviderApplanix::SharedPtr transform_provider_applanix;
-  points_provider::PointsProviderVelodyneVlp16::SharedPtr points_provider_velodyne_vlp16;
+  points_provider::PointsProvider::SharedPtr points_provider_;
 
   PointCloud2::SharedPtr points_to_cloud(const Points & points_bad, const std::string & frame_id);
 

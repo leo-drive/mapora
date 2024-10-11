@@ -1,11 +1,11 @@
 /mapora:
   ros__parameters:
-    project_namespace: ytu_campus_080423_mapora
-    pcap_dir_path: src/mapora/example_data/mapora/splitted_pcap
-    pose_txt_path: src/mapora/example_data/mapora/ytu_campus_080423_pp_istn_utc_leo.txt
-    las_export_directory: src/mapora/example_data/mapora/output_las/
+    project_namespace: 2024_08_16-bilisim_vadi
+    pcap_dir_path: /home/ataparlar/data/task_specific/mapora/pcaps/
+    pose_txt_path: /home/ataparlar/data/task_specific/mapora/2024_08_16-bilisim_vadi-map-export.txt
+    las_export_directory: /home/ataparlar/data/task_specific/mapora/output/
     max_point_distance_from_lidar: 60.0  # in meters
     min_point_distance_from_lidar: 3.0  # in meters
-    r_x: 179.59
-    r_y: -0.42
-    r_z: 0.39
+    r_x: -179.58825
+    r_y: 0.44683
+    r_z: 179.66740

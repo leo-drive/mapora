@@ -23,23 +23,26 @@
 #include <algorithm>
 #include <string>
 #include <vector>
-#include "mapora/point_xyzit.hpp"
+#include "mapora/point_types.hpp"
 #include "mapora/points_provider_velodyne_vlp16.hpp"
-#include "mapora/continuous_packet_parser_vlp16.hpp"
+#include "mapora/parsers/velodyne_vlp16.hpp"
+#include "mapora/parsers/hesai_xt32.hpp"
 
 namespace mapora::points_provider {
 namespace fs = boost::filesystem;
-using Point = PointsProviderBase::Point;
-using Points = PointsProviderBase::Points;
+using Point = point_types::PointXYZITRH;
+using Points = std::vector<Point>;
 
-PointsProviderVelodyneVlp16::PointsProviderVelodyneVlp16(std::string path_folder_pcaps)
+PointsProvider::PointsProvider(
+    std::string path_folder_pcaps, std::string sensor_type)
   : path_folder_pcaps_{path_folder_pcaps} {
   if (!fs::is_directory(path_folder_pcaps_)) {
     throw std::runtime_error(path_folder_pcaps_.string() + " is not a directory.");
   }
+  sensor_type_ = sensor_type;
 }
 
-void PointsProviderVelodyneVlp16::process() {
+void PointsProvider::process() {
   paths_pcaps_.clear();
   for (const auto &path_pcap :
     boost::make_iterator_range(fs::directory_iterator(path_folder_pcaps_))) {
@@ -60,7 +63,7 @@ void PointsProviderVelodyneVlp16::process() {
   }
 }
 
-void PointsProviderVelodyneVlp16::process_pcaps_into_clouds(
+void PointsProvider::process_pcaps_into_clouds(
   std::function<void(const Points &)> &callback_cloud_surround_out,
   const size_t index_start,
   const size_t count,
@@ -70,17 +73,27 @@ void PointsProviderVelodyneVlp16::process_pcaps_into_clouds(
     throw std::range_error("index is outside paths_pcaps_ range.");
   }
 
-  continuous_packet_parser_vlp16::ContinuousPacketParserVlp16 packet_parser;
-  for (size_t i = index_start; i < index_start + count; ++i) {
-    process_pcap_into_clouds(paths_pcaps_.at(i), callback_cloud_surround_out,
-                             packet_parser, max_point_distance_from_lidar, min_point_distance_from_lidar);
+  if (sensor_type_ == "velodyne_vlp16") {
+    continuous_packet_parser::ContinuousPacketParserVlp16 packet_parser;
+    for (size_t i = index_start; i < index_start + count; ++i) {
+      process_pcap_into_clouds(paths_pcaps_.at(i), callback_cloud_surround_out,
+                               packet_parser, max_point_distance_from_lidar, min_point_distance_from_lidar);
+    }
+  } else if (sensor_type_ == "hesai_xt32") {
+    continuous_packet_parser::ContinuousPacketParserXt32 packet_parser;
+    for (size_t i = index_start; i < index_start + count; ++i) {
+      process_pcap_into_clouds(paths_pcaps_.at(i), callback_cloud_surround_out,
+                               packet_parser, max_point_distance_from_lidar, min_point_distance_from_lidar);
+    }
   }
 }
 
-void PointsProviderVelodyneVlp16::process_pcap_into_clouds(
+template <typename parser_type>
+void PointsProvider::process_pcap_into_clouds(
   const fs::path &path_pcap,
   const std::function<void(const Points &)> &callback_cloud_surround_out,
-  continuous_packet_parser_vlp16::ContinuousPacketParserVlp16 &parser,
+//    continuous_packet_parser::ContinuousPacketParserVlp16 &parser,
+    parser_type &parser,
   const float min_point_distance_from_lidar,
   const float max_point_distance_from_lidar) {
   std::cout << "processing: " << path_pcap << std::endl;
@@ -97,13 +110,15 @@ void PointsProviderVelodyneVlp16::process_pcap_into_clouds(
 
   pcpp::RawPacket rawPacket;
   while (reader->getNextPacket(rawPacket)) {
-    parser.process_packet_into_cloud(rawPacket,callback_cloud_surround_out,
-                                     min_point_distance_from_lidar, max_point_distance_from_lidar);
+    parser.process_packet_into_cloud(rawPacket, callback_cloud_surround_out,
+                                     min_point_distance_from_lidar, max_point_distance_from_lidar,
+                                     // TODO: make parameters here for time filter.
+                                     1, 2);
   }
 
   reader->close();
   delete reader;
 }
 
-std::string PointsProviderVelodyneVlp16::info() { return ""; }
+std::string PointsProvider::info() { return ""; }
 }  // namespace mapora::points_provider

@@ -14,12 +14,13 @@
 * limitations under the License.
  */
 
-#include "mapora/continuous_packet_parser_vlp16.hpp"
+#include "mapora/parsers/velodyne_vlp16.hpp"
 #include <iostream>
+#include <numeric>
 #include <pcapplusplus/Packet.h>
 #include "mapora/utils.hpp"
 
-namespace mapora::points_provider::continuous_packet_parser_vlp16 {
+namespace mapora::points_provider::continuous_packet_parser {
 ContinuousPacketParserVlp16::ContinuousPacketParserVlp16()
   : factory_bytes_are_read_at_least_once_{false},
     has_received_valid_position_package_{false},
@@ -75,6 +76,7 @@ ContinuousPacketParserVlp16::ContinuousPacketParserVlp16()
 void ContinuousPacketParserVlp16::process_packet_into_cloud(
   const pcpp::RawPacket &rawPacket,
   const std::function<void(const Points &)> &callback_cloud_surround_out,
+  double time_start_in_utc, double time_end_in_utc,
   const float min_point_distance_from_lidar,
   const float max_point_distance_from_lidar) {
   switch (rawPacket.getFrameLength()) {
@@ -265,6 +267,24 @@ void ContinuousPacketParserVlp16::process_packet_into_cloud(
           point.stamp_nanoseconds =
             std::chrono::nanoseconds(microseconds_since_toh.subseconds()).count();
 
+          std::chrono::duration point_duration =
+              std::chrono::seconds(
+                  tp_hours_since_epoch.time_since_epoch() + microseconds_since_toh.minutes() +
+                  microseconds_since_toh.seconds()) +
+              std::chrono::nanoseconds(microseconds_since_toh.subseconds());
+
+          double integer_start;
+          double frac_start = std::modf(time_start_in_utc, &integer_start);
+          std::chrono::seconds time_filter_start_int(static_cast<long>(integer_start));
+          std::chrono::nanoseconds time_filter_start_frac(static_cast<long>(frac_start*1000000000));
+          std::chrono::duration time_filter_start = time_filter_start_int + time_filter_start_frac;
+
+          double integer_end;
+          double frac_end = std::modf(time_end_in_utc, &integer_end);
+          std::chrono::seconds time_filter_end_int(static_cast<long>(integer_end));
+          std::chrono::nanoseconds time_filter_end_frac(static_cast<long>(frac_end*1000000000));
+          std::chrono::duration time_filter_end = time_filter_end_int + time_filter_end_frac;
+
           if (
             std::sqrt(std::pow(point.x, 2) + std::pow(point.y, 2) + std::pow(point.z, 2))
             < min_point_distance_from_lidar) {
@@ -276,7 +296,11 @@ void ContinuousPacketParserVlp16::process_packet_into_cloud(
             continue;
           }
 
-          cloud_.push_back(point);
+          if (dist_m != 0 && ind_point != 0 &&
+              time_filter_start.count() < point_duration.count() &&
+              point_duration.count() < time_filter_end.count()) {
+            cloud_.push_back(point);
+          }
         }
       }
 
@@ -301,4 +325,4 @@ void ContinuousPacketParserVlp16::process_packet_into_cloud(
     }
   }
 }
-}  // namespace mapora::point_provider::continuous_packet_parser_vlp16
+}  // namespace mapora::point_provider::continuous_packet_parser

@@ -14,8 +14,8 @@
 * limitations under the License.
  */
 
-#ifndef MAPORA__CONTINUOUS_PACKET_PARSER_HPP_
-#define MAPORA__CONTINUOUS_PACKET_PARSER_HPP_
+#ifndef MAPORA__CONTINUOUS_PACKET_PARSER_VLP16_HPP_
+#define MAPORA__CONTINUOUS_PACKET_PARSER_VLP16_HPP_
 
 #include <map>
 #include <memory>
@@ -23,17 +23,19 @@
 #include <cstdint>
 #include <string>
 #include <functional>
-#include "point_xyzit.hpp"
+#include "mapora/point_types.hpp"
 #include "mapora/date.h"
 #include <pcapplusplus/Packet.h>
 
 
-namespace mapora::points_provider::continuous_packet_parser_vlp16
+namespace mapora::points_provider::continuous_packet_parser
 {
 class ContinuousPacketParserVlp16
 {
 public:
-  using Point = point_types::PointXYZIT;
+  using SharedPtr = std::shared_ptr<ContinuousPacketParserVlp16>;
+  using ConstSharedPtr = const std::shared_ptr<ContinuousPacketParserVlp16>;
+  using Point = point_types::PointXYZITRH;
   using Points = std::vector<Point>;
 
   ContinuousPacketParserVlp16();
@@ -41,6 +43,7 @@ public:
   void process_packet_into_cloud(
     const pcpp::RawPacket & rawPacket,
     const std::function<void(const Points &)> & callback_cloud_surround_out,
+    double time_start_in_utc, double time_end_in_utc,
     const float min_point_distance_from_lidar,
     const float max_point_distance_from_lidar);
 
@@ -135,7 +138,7 @@ private:
   bool can_publish_again_;
   float angle_deg_cut_;
 };
-}  // namespace mapora::point_provider::continuous_packet_parser_vlp16
+}  // namespace mapora::point_provider::continuous_packet_parser
 
 
-#endif  // MAPORA__CONTINUOUS_PACKET_PARSER_HPP_
+#endif  // MAPORA__CONTINUOUS_PACKET_PARSER_VLP16_HPP_
