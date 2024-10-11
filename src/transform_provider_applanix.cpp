@@ -24,6 +24,7 @@
 #include <iostream>
 #include <Eigen/Geometry>
 #include <GeographicLib/TransverseMercatorExact.hpp>
+#include <GeographicLib/MGRS.hpp>
 #include <GeographicLib/UTMUPS.hpp>
 #include "mapora/date.h"
 #include "mapora/utils.hpp"
@@ -224,11 +225,29 @@ void TransformProviderApplanix::process() {
       in.pitch_std,
       in.heading_std)) {
 
+      double x, y, z; int zone; bool northp; int prec=8;
+      GeographicLib::UTMUPS::Forward(in.latitude, in.longitude, zone, northp, x, y);
+      std::string mgrs_string;
+      GeographicLib::MGRS::Forward(zone, northp, x, y, prec, mgrs_string);
+      //      std::cout << mgrs_string << std::endl;
+      std::vector coords = parse_mgrs_coordinates(mgrs_string);
+      x = coords.at(0);
+      y = coords.at(1);
+      z = in.ellipsoid_height;
+
+//      x = in.easting - origin_x;
+//      y = in.northing - origin_y;
+//      z = in.ellipsoid_height - origin_z;
+
+
       Pose pose;
       Imu imu;
-      pose.pose_with_covariance.pose.position.set__x(in.easting);
-      pose.pose_with_covariance.pose.position.set__y(in.northing);
-      pose.pose_with_covariance.pose.position.set__z(in.ellipsoid_height);
+      pose.pose_with_covariance.pose.position.set__x(x);
+      pose.pose_with_covariance.pose.position.set__y(y);
+      pose.pose_with_covariance.pose.position.set__z(z);
+//      pose.pose_with_covariance.pose.position.set__x(in.easting);
+//      pose.pose_with_covariance.pose.position.set__y(in.northing);
+//      pose.pose_with_covariance.pose.position.set__z(in.ellipsoid_height);
       Eigen::AngleAxisd angle_axis_x(utils::Utils::deg_to_rad(in.roll), Eigen::Vector3d::UnitY());
       Eigen::AngleAxisd angle_axis_y(utils::Utils::deg_to_rad(in.pitch), Eigen::Vector3d::UnitX());
       Eigen::AngleAxisd angle_axis_z(utils::Utils::deg_to_rad(-in.heading), Eigen::Vector3d::UnitZ());

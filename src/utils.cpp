@@ -15,9 +15,10 @@
  */
 #include "mapora/utils.hpp"
 
+#include <Eigen/Geometry>
 #include <iomanip>
-#include <string>
 #include <sstream>
+#include <string>
 #include <vector>
 
 namespace mapora::utils
@@ -54,6 +55,24 @@ std::vector<std::string> Utils::string_to_vec_split_by(
   }
   return seglist;
 }
+
+Eigen::Matrix3d Utils::ned2enu_converter_for_matrices(const Eigen::Matrix3d & matrix3d)
+{
+  Eigen::Matrix3d ned2enu;
+  ned2enu.matrix().topLeftCorner<3, 3>() =
+      Eigen::AngleAxisd(utils::Utils::deg_to_rad(-90.0), Eigen::Vector3d::UnitZ())
+          .toRotationMatrix() *
+      Eigen::AngleAxisd(utils::Utils::deg_to_rad(0.0), Eigen::Vector3d::UnitY())
+          .toRotationMatrix() *
+      Eigen::AngleAxisd(utils::Utils::deg_to_rad(180.0), Eigen::Vector3d::UnitX())
+          .toRotationMatrix();
+
+  Eigen::Matrix3d output_matrix;
+  output_matrix = matrix3d.matrix() * ned2enu.matrix();
+
+  return output_matrix;
+}
+
 
 
 

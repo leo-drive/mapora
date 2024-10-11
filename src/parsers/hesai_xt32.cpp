@@ -285,13 +285,13 @@ void ContinuousPacketParserXt32::process_packet_into_cloud(
           std::chrono::nanoseconds time_filter_end_frac(static_cast<long>(frac_end*1000000000));
           std::chrono::duration time_filter_end = time_filter_end_int + time_filter_end_frac;
 
-          if (dist_m != 0 && dist_m <= max_point_distance_from_lidar &&
-              dist_m >= min_point_distance_from_lidar&& ind_point != 0 // &&
+//          if (dist_m != 0 && dist_m <= max_point_distance_from_lidar &&
+//              dist_m >= min_point_distance_from_lidar&& ind_point != 0 // &&
 //              time_filter_start.count() < point_duration.count() &&
 //              point_duration.count() < time_filter_end.count()
-              ) {
+//              ) {
             cloud_.push_back(point);
-          }
+//          }
         }
       }
     } else if (return_mode == ReturnMode::LastReturn || return_mode == ReturnMode::Strongest) {
@@ -412,13 +412,13 @@ void ContinuousPacketParserXt32::process_packet_into_cloud(
           std::chrono::nanoseconds time_filter_end_frac(static_cast<long>(frac_end*1000000000));
           std::chrono::duration time_filter_end = time_filter_end_int + time_filter_end_frac;
 
-          if (dist_m != 0 && dist_m <= max_point_distance_from_lidar &&
-              dist_m >= min_point_distance_from_lidar&& ind_point != 0 // &&
+//          if (dist_m != 0 && dist_m <= max_point_distance_from_lidar &&
+//              dist_m >= min_point_distance_from_lidar&& ind_point != 0 // &&
 //              time_filter_start.count() < point_duration.count() &&
 //              point_duration.count() < time_filter_end.count()
-              ) {
+//              ) {
             cloud_.push_back(point);
-          }
+//          }
         }
       }
     }

@@ -181,17 +181,27 @@ void Mapora::process()
         Eigen::Quaterniond quat_ins_to_map(pose_ori.w, pose_ori.x, pose_ori.y, pose_ori.z);
         Eigen::Affine3d affine_imu2lidar(Eigen::Affine3d::Identity());
         affine_imu2lidar.matrix().topLeftCorner<3, 3>() =
-          Eigen::AngleAxisd(utils::Utils::deg_to_rad(-imu2lidar_yaw), Eigen::Vector3d::UnitZ())
+          Eigen::AngleAxisd(utils::Utils::deg_to_rad(-(imu2lidar_yaw - pose.meridian_convergence)), Eigen::Vector3d::UnitZ())
             .toRotationMatrix() *
           Eigen::AngleAxisd(utils::Utils::deg_to_rad(imu2lidar_pitch), Eigen::Vector3d::UnitY())
             .toRotationMatrix() *
-          Eigen::AngleAxisd(utils::Utils::deg_to_rad(-imu2lidar_roll), Eigen::Vector3d::UnitX())
+          Eigen::AngleAxisd(utils::Utils::deg_to_rad(imu2lidar_roll), Eigen::Vector3d::UnitX())
             .toRotationMatrix();
 
-        // sensor to map rotation is created to add translations and get the right rotation.
-        Eigen::Affine3d affine_sensor2map(Eigen::Affine3d::Identity());
+        Eigen::Affine3d affine_imu2lidar_enu;
+        affine_imu2lidar_enu.matrix().topLeftCorner<3, 3>() =
+            utils::Utils::ned2enu_converter_for_matrices(
+                affine_imu2lidar.matrix().topLeftCorner<3, 3>());
 
-        affine_sensor2map.matrix().topLeftCorner<3, 3>() = quat_ins_to_map.toRotationMatrix().inverse() * affine_imu2lidar.rotation().inverse();
+        Eigen::Affine3d affine_sensor2map(Eigen::Affine3d::Identity());
+        affine_sensor2map.matrix().topLeftCorner<3, 3>() =
+            quat_ins_to_map.toRotationMatrix() * affine_imu2lidar_enu.rotation();
+
+        // sensor to map rotation is created to add translations and get the right rotation.
+//        Eigen::Affine3d affine_sensor2map(Eigen::Affine3d::Identity());
+
+//        affine_sensor2map.matrix().topLeftCorner<3, 3>() =
+//            quat_ins_to_map.toRotationMatrix() * affine_imu2lidar.rotation();
 
         // pose is added to the transformation matrix. - these were completed for every point in the pointclouds.
         auto & pose_pos = pose_stamped.pose.position;

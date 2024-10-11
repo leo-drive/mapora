@@ -17,11 +17,12 @@
 #ifndef MAPORA__UTILS_HPP_
 #define MAPORA__UTILS_HPP_
 
-#include <string>
-#include <cstdint>
-#include <vector>
+#include <Eigen/Core>
 #include <cmath>
+#include <cstdint>
+#include <string>
 #include <type_traits>
+#include <vector>
 
 namespace mapora::utils
 {
@@ -41,6 +42,9 @@ public:
     constexpr double multiplier = M_PI / 180.0;
     return static_cast<T>(deg * multiplier);
   }
+
+  static Eigen::Matrix3d ned2enu_converter_for_matrices(const Eigen::Matrix3d & matrix3d);
+
 };
 
 }  // namespace mapora::utils
