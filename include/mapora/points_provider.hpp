@@ -23,42 +23,50 @@
 #include <vector>
 #include <map>
 #include <functional>
-#include "points_provider_base.hpp"
-#include "point_xyzit.hpp"
+#include "point_types.hpp"
 #include "mapora/date.h"
-#include "mapora/continuous_packet_parser_vlp16.hpp"
+#include "mapora/parsers/velodyne_vlp16.hpp"
 
 namespace mapora::points_provider
 {
 namespace fs = boost::filesystem;
-class PointsProviderVelodyneVlp16 : public virtual PointsProviderBase
+class PointsProvider
 {
 public:
-  using SharedPtr = std::shared_ptr<PointsProviderVelodyneVlp16>;
+  using SharedPtr = std::shared_ptr<PointsProvider>;
   using ConstSharedPtr = const SharedPtr;
+  using Point = point_types::PointXYZITRH;
+  using Points = std::vector<Point>;
 
-  explicit PointsProviderVelodyneVlp16( std::string  path_folder_pcaps);
+  explicit PointsProvider(
+      std::string  path_folder_pcaps, std::string sensor_type);
 
-  void process() override;
+  void process();
 
   void process_pcaps_into_clouds(
     std::function<void(const Points &)> & callback_cloud_surround_out,
     size_t index_start,
     size_t count,
-    float max_point_distance_from_lidar,
-    float min_point_distance_from_lidar);
-  std::string info() override;
+    float min_point_distance_from_lidar,
+    float max_point_distance_from_lidar);
+  std::string info();
 
   std::vector<fs::path> paths_pcaps_;
 
+
+  template <typename parser_type>
   void process_pcap_into_clouds(
     const fs::path & path_pcap,
     const std::function<void(const Points &)>& callback_cloud_surround_out,
-    continuous_packet_parser_vlp16::ContinuousPacketParserVlp16& parser,
+//      continuous_packet_parser::ContinuousPacketParserVlp16& parser,
+      parser_type &parser,
     const float min_point_distance_from_lidar,
     const float max_point_distance_from_lidar);
 private:
   fs::path path_folder_pcaps_;
+  std::string sensor_type_;
+
+
 };
 }  // namespace mapora::points_provider
 

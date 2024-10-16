@@ -11,6 +11,9 @@
 
   <depend>rclcpp</depend>
   <depend>rclcpp_components</depend>
+  <depend>PcapPlusPlus</depend>
+  <depend>GeographicLib</depend>
+  <depend>PCL</depend>
   <depend>rosbag2_cpp</depend>
   <depend>sensor_msgs</depend>
   <depend>nav_msgs</depend>

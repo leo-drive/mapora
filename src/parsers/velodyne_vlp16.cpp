@@ -14,12 +14,13 @@
 * limitations under the License.
  */
 
-#include "mapora/continuous_packet_parser_vlp16.hpp"
+#include "mapora/parsers/velodyne_vlp16.hpp"
 #include <iostream>
+#include <numeric>
 #include <pcapplusplus/Packet.h>
 #include "mapora/utils.hpp"
 
-namespace mapora::points_provider::continuous_packet_parser_vlp16 {
+namespace mapora::points_provider::continuous_packet_parser {
 ContinuousPacketParserVlp16::ContinuousPacketParserVlp16()
   : factory_bytes_are_read_at_least_once_{false},
     has_received_valid_position_package_{false},
@@ -265,6 +266,12 @@ void ContinuousPacketParserVlp16::process_packet_into_cloud(
           point.stamp_nanoseconds =
             std::chrono::nanoseconds(microseconds_since_toh.subseconds()).count();
 
+          std::chrono::duration point_duration =
+              std::chrono::seconds(
+                  tp_hours_since_epoch.time_since_epoch() + microseconds_since_toh.minutes() +
+                  microseconds_since_toh.seconds()) +
+              std::chrono::nanoseconds(microseconds_since_toh.subseconds());
+
           if (
             std::sqrt(std::pow(point.x, 2) + std::pow(point.y, 2) + std::pow(point.z, 2))
             < min_point_distance_from_lidar) {
@@ -276,7 +283,6 @@ void ContinuousPacketParserVlp16::process_packet_into_cloud(
             continue;
           }
 
-          cloud_.push_back(point);
         }
       }
 
@@ -301,4 +307,4 @@ void ContinuousPacketParserVlp16::process_packet_into_cloud(
     }
   }
 }
-}  // namespace mapora::point_provider::continuous_packet_parser_vlp16
+}  // namespace mapora::point_provider::continuous_packet_parser

@@ -17,13 +17,13 @@
 #ifndef MAPORA__MAPORA_HPP_
 #define MAPORA__MAPORA_HPP_
 
+#include "mapora/points_provider.hpp"
+#include "mapora/transform_provider.hpp"
 #include "mapora/visibility_control.hpp"
-#include "mapora/points_provider_velodyne_vlp16.hpp"
-#include "mapora/transform_provider_applanix.hpp"
-#include <rclcpp/rclcpp.hpp>
 #include <memory>
-#include <sensor_msgs/msg/point_cloud2.hpp>
 #include <nav_msgs/msg/path.hpp>
+#include <rclcpp/rclcpp.hpp>
+#include <sensor_msgs/msg/point_cloud2.hpp>
 #include <tf2/LinearMath/Quaternion.h>
 #include <tf2_ros/transform_broadcaster.h>
 
@@ -39,7 +39,8 @@ public:
   using SharedPtr = std::shared_ptr<Mapora>;
   using ConstSharedPtr = const std::shared_ptr<Mapora>;
   using PointCloud2 = sensor_msgs::msg::PointCloud2;
-  using Points = points_provider::PointsProviderBase::Points;
+  using Point = point_types::PointXYZITRH;
+  using Points = std::vector<Point>;
 
   explicit Mapora(const rclcpp::NodeOptions & options);
 
@@ -55,23 +56,31 @@ public:
   double max_point_distance_from_lidar_;
   double min_point_distance_from_lidar_;
   std::string las_export_dir;
+  std::string lidar_model;
 
-  std::vector<points_provider::PointsProviderVelodyneVlp16::Points> clouds;
+  std::vector<Points> clouds;
 
 private:
   rclcpp::Publisher<PointCloud2>::SharedPtr pub_ptr_cloud_current_;
-  rclcpp::Publisher<nav_msgs::msg::Path>::SharedPtr pub_ptr_path_applanix_;
+  rclcpp::Publisher<nav_msgs::msg::Path>::SharedPtr pub_ptr_path;
 
-  transform_provider_applanix::TransformProviderApplanix::SharedPtr transform_provider_applanix;
-  points_provider::PointsProviderVelodyneVlp16::SharedPtr points_provider_velodyne_vlp16;
+  transform_provider::TransformProvider::SharedPtr
+      transform_provider;
+  points_provider::PointsProvider::SharedPtr points_provider_;
 
   PointCloud2::SharedPtr points_to_cloud(const Points & points_bad, const std::string & frame_id);
 
   void callback_cloud_surround_out(const Points & points_surround);
 
-  std::unique_ptr<tf2_ros::TransformBroadcaster> tf_broadcaster_;
-  transform_provider_applanix::TransformProviderApplanix::Pose pose;
+  Points transform_points(Points & cloud);
 
+
+  std::unique_ptr<tf2_ros::TransformBroadcaster> tf_broadcaster_;
+  transform_provider::TransformProvider::Pose pose;
+
+  Point last_point;
+
+  int file_counter = 0;
 };
 }  // namespace mapora
 
