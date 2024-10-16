@@ -47,8 +47,8 @@ public:
     std::function<void(const Points &)> & callback_cloud_surround_out,
     size_t index_start,
     size_t count,
-    float max_point_distance_from_lidar,
-    float min_point_distance_from_lidar);
+    float min_point_distance_from_lidar,
+    float max_point_distance_from_lidar);
   std::string info();
 
   std::vector<fs::path> paths_pcaps_;

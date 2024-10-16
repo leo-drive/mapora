@@ -55,7 +55,6 @@ ContinuousPacketParserXt32::ContinuousPacketParserXt32()
 void ContinuousPacketParserXt32::process_packet_into_cloud(
     const pcpp::RawPacket & rawPacket,
     const std::function<void(const Points &)> & callback_cloud_surround_out,
-    double time_start_in_utc, double time_end_in_utc,
     const float min_point_distance_from_lidar,
     const float max_point_distance_from_lidar)
 {
@@ -185,6 +184,7 @@ void ContinuousPacketParserXt32::process_packet_into_cloud(
 
         if (!has_processed_a_packet_) {
           angle_deg_azimuth_last_packet_ = angle_deg_azimuth_of_block_first;
+//          microseconds_last_packet_ = microseconds_toh;
           microseconds_last_packet_ = microseconds_toh;
           //          std::cout << "data_packet_with_header->microseconds_toh: " <<
           //          data_packet_with_header->microseconds_toh << std::endl;
@@ -215,13 +215,27 @@ void ContinuousPacketParserXt32::process_packet_into_cloud(
           angle_deg_azimuth_last_packet_ = angle_deg_azimuth_of_block_first;
           microseconds_last_packet_ = microseconds_toh;
         }
+
         for (int ind_point = 0; ind_point < data_block_first.get_size_data_points();
              ind_point++) {
           //            const auto & data_point_first = data_block_first.data_points[ind_point];
           const auto & data_point_second = data_block_second.data_points[ind_point];
 
-          float timing_offset_from_first_block = 5.632 - (50 * (8 - ind_block + 1));
-          float timing_offset_from_first_firing = 1.512 * (ind_point - 1) + 0.368;
+//          float timing_offset_from_first_block = 5.632 - (50 * (8 - ind_block + 1));
+//          float timing_offset_from_first_firing = 1.512 * (ind_point - 1) + 0.368;
+
+          float timing_offset_from_first_block;
+          if (ind_block == 0 || ind_block == 1) {
+            timing_offset_from_first_block = 3.28 - (50 * 3);
+          } else if (ind_block == 2 || ind_block == 3) {
+            timing_offset_from_first_block = 3.28 - (50 * 2);
+          } else if (ind_block == 4 || ind_block == 5) {
+            timing_offset_from_first_block = 3.28 - (50 * 1);
+          } else if (ind_block == 6 || ind_block == 7) {
+            timing_offset_from_first_block = 3.28;
+          }
+          float timing_offset_from_first_firing = 1.512 * (ind_point - 1) + 0.28;
+
           auto timing_offset_from_first_block_dur =
               std::chrono::duration<float, std::micro>(timing_offset_from_first_block);
           auto timing_offset_from_first_firing_dur =
@@ -237,6 +251,7 @@ void ContinuousPacketParserXt32::process_packet_into_cloud(
               angle_deg_azimuth_of_block_first +
               static_cast<float>(
                   speed_deg_per_microseconds_angle_azimuth * timing_offset_from_first_firing);
+//                  speed_deg_per_microseconds_angle_azimuth * (timing_offset_from_first_block+timing_offset_from_first_firing));
 
           if (angle_deg_azimuth_point >= 360.0f) {
             angle_deg_azimuth_point -= 360.0f;
@@ -267,31 +282,11 @@ void ContinuousPacketParserXt32::process_packet_into_cloud(
                   microseconds_since_toh.subseconds() + timing_offset_from_first_block_time +
                   timing_offset_from_first_firing_time)
                   .count();
-          std::chrono::duration point_duration =
-              std::chrono::seconds(
-                  tp_hours_since_epoch.time_since_epoch() + microseconds_since_toh.minutes() +
-                  microseconds_since_toh.seconds()) +
-              std::chrono::nanoseconds(microseconds_since_toh.subseconds());
 
-          double integer_start;
-          double frac_start = std::modf(time_start_in_utc, &integer_start);
-          std::chrono::seconds time_filter_start_int(static_cast<long>(integer_start));
-          std::chrono::nanoseconds time_filter_start_frac(static_cast<long>(frac_start*1000000000));
-          std::chrono::duration time_filter_start = time_filter_start_int + time_filter_start_frac;
-
-          double integer_end;
-          double frac_end = std::modf(time_end_in_utc, &integer_end);
-          std::chrono::seconds time_filter_end_int(static_cast<long>(integer_end));
-          std::chrono::nanoseconds time_filter_end_frac(static_cast<long>(frac_end*1000000000));
-          std::chrono::duration time_filter_end = time_filter_end_int + time_filter_end_frac;
-
-//          if (dist_m != 0 && dist_m <= max_point_distance_from_lidar &&
-//              dist_m >= min_point_distance_from_lidar&& ind_point != 0 // &&
-//              time_filter_start.count() < point_duration.count() &&
-//              point_duration.count() < time_filter_end.count()
-//              ) {
+          if (dist_m != 0 && dist_m <= max_point_distance_from_lidar &&
+              dist_m >= min_point_distance_from_lidar) {
             cloud_.push_back(point);
-//          }
+          }
         }
       }
     } else if (return_mode == ReturnMode::LastReturn || return_mode == ReturnMode::Strongest) {
@@ -400,25 +395,10 @@ void ContinuousPacketParserXt32::process_packet_into_cloud(
                   microseconds_since_toh.seconds()) +
               std::chrono::nanoseconds(microseconds_since_toh.subseconds());
 
-          double integer_start;
-          double frac_start = std::modf(time_start_in_utc, &integer_start);
-          std::chrono::seconds time_filter_start_int(static_cast<long>(integer_start));
-          std::chrono::nanoseconds time_filter_start_frac(static_cast<long>(frac_start*1000000000));
-          std::chrono::duration time_filter_start = time_filter_start_int + time_filter_start_frac;
-
-          double integer_end;
-          double frac_end = std::modf(time_end_in_utc, &integer_end);
-          std::chrono::seconds time_filter_end_int(static_cast<long>(integer_end));
-          std::chrono::nanoseconds time_filter_end_frac(static_cast<long>(frac_end*1000000000));
-          std::chrono::duration time_filter_end = time_filter_end_int + time_filter_end_frac;
-
-//          if (dist_m != 0 && dist_m <= max_point_distance_from_lidar &&
-//              dist_m >= min_point_distance_from_lidar&& ind_point != 0 // &&
-//              time_filter_start.count() < point_duration.count() &&
-//              point_duration.count() < time_filter_end.count()
-//              ) {
+          if (dist_m != 0 && dist_m <= max_point_distance_from_lidar &&
+              dist_m >= min_point_distance_from_lidar ) {
             cloud_.push_back(point);
-//          }
+          }
         }
       }
     }

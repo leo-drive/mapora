@@ -32,7 +32,6 @@ public:
   void process_packet_into_cloud(
       const pcpp::RawPacket & rawPacket,
       const std::function<void(const Points &)> & callback_cloud_surround_out,
-      double time_start_in_utc, double time_end_in_utc,
       const float min_point_distance_from_lidar,
       const float max_point_distance_from_lidar);
 

@@ -67,8 +67,8 @@ void PointsProvider::process_pcaps_into_clouds(
   std::function<void(const Points &)> &callback_cloud_surround_out,
   const size_t index_start,
   const size_t count,
-  const float max_point_distance_from_lidar,
-  const float min_point_distance_from_lidar) {
+  const float min_point_distance_from_lidar,
+  const float max_point_distance_from_lidar) {
   if (index_start >= paths_pcaps_.size() || index_start + count > paths_pcaps_.size()) {
     throw std::range_error("index is outside paths_pcaps_ range.");
   }
@@ -77,13 +77,13 @@ void PointsProvider::process_pcaps_into_clouds(
     continuous_packet_parser::ContinuousPacketParserVlp16 packet_parser;
     for (size_t i = index_start; i < index_start + count; ++i) {
       process_pcap_into_clouds(paths_pcaps_.at(i), callback_cloud_surround_out,
-                               packet_parser, max_point_distance_from_lidar, min_point_distance_from_lidar);
+                               packet_parser, min_point_distance_from_lidar, max_point_distance_from_lidar);
     }
   } else if (sensor_type_ == "hesai_xt32") {
     continuous_packet_parser::ContinuousPacketParserXt32 packet_parser;
     for (size_t i = index_start; i < index_start + count; ++i) {
       process_pcap_into_clouds(paths_pcaps_.at(i), callback_cloud_surround_out,
-                               packet_parser, max_point_distance_from_lidar, min_point_distance_from_lidar);
+                               packet_parser, min_point_distance_from_lidar, max_point_distance_from_lidar);
     }
   }
 }
@@ -111,9 +111,7 @@ void PointsProvider::process_pcap_into_clouds(
   pcpp::RawPacket rawPacket;
   while (reader->getNextPacket(rawPacket)) {
     parser.process_packet_into_cloud(rawPacket, callback_cloud_surround_out,
-                                     min_point_distance_from_lidar, max_point_distance_from_lidar,
-                                     // TODO: make parameters here for time filter.
-                                     1, 2);
+                                     min_point_distance_from_lidar, max_point_distance_from_lidar);
   }
 
   reader->close();

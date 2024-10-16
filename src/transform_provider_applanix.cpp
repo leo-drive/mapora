@@ -300,6 +300,9 @@ void TransformProviderApplanix::process() {
       pose.stamp_unix_seconds = std::chrono::seconds(tp.time_since_epoch()).count();
       pose.stamp_nanoseconds = std::chrono::nanoseconds(time_since_midnight.subseconds()).count();
 
+      imu.stamp_unix_seconds = pose.stamp_unix_seconds;
+      imu.stamp_nanoseconds = pose.stamp_nanoseconds;
+
       std::array<double, 6> variances{
         std::pow(in.north_std, 2),
         std::pow(in.east_std, 2),
@@ -320,8 +323,8 @@ void TransformProviderApplanix::process() {
         pose.pose_with_covariance.covariance.at(i * 7) = variances.at(i);
       }
       pose.meridian_convergence = compute_meridian_convergence(in.latitude, in.longitude);
-      imu_rotations_.push_back(imu);
 
+      imu_rotations_.push_back(imu);
       poses_.push_back(pose);
     }
   } catch (const std::exception &ex) {
