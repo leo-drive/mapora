@@ -93,12 +93,10 @@ void ContinuousPacketParserXt32::process_packet_into_cloud(
 
     date::year_month_day date_current_ = date::year{years_raw} / months_raw / days_raw;
     tp_hours_since_epoch = date::sys_days(date_current_) + std::chrono::hours(hours_raw);
-    uint32_t seconds_epoch_precision_of_hour =
-        std::chrono::seconds(tp_hours_since_epoch.time_since_epoch()).count();
 
-    for (auto segment : segments) {
-      std::cout << segment << std::endl;
-    }
+//    for (auto segment : segments) {
+//      std::cout << segment << std::endl;
+//    }
 
     has_received_valid_position_package_ = true;
     break;
@@ -131,8 +129,6 @@ void ContinuousPacketParserXt32::process_packet_into_cloud(
       // Proceed with your logic using hesai_model
     }
 
-    //      auto hesai_model =
-    //        map_byte_to_hesai_model_.at(data_packet_with_header->pre_header.protocol_version_major);
     if (hesai_model != HesaiModel::PandarXT) {
       throw std::runtime_error(
           "hesai_model was expected to be: " + map_hesai_model_to_string_.at(HesaiModel::PandarXT) +
@@ -184,10 +180,7 @@ void ContinuousPacketParserXt32::process_packet_into_cloud(
 
         if (!has_processed_a_packet_) {
           angle_deg_azimuth_last_packet_ = angle_deg_azimuth_of_block_first;
-//          microseconds_last_packet_ = microseconds_toh;
           microseconds_last_packet_ = microseconds_toh;
-          //          std::cout << "data_packet_with_header->microseconds_toh: " <<
-          //          data_packet_with_header->microseconds_toh << std::endl;
           has_processed_a_packet_ = true;
           break;
         } else if (ind_block == 0) {
@@ -199,7 +192,6 @@ void ContinuousPacketParserXt32::process_packet_into_cloud(
               angle_deg_azimuth_increased - angle_deg_azimuth_last_packet_;
 
           // Compensate for ToH microseconds rollover
-
           uint32_t microseconds_toh_current_increased = microseconds_toh;
           if (microseconds_toh < microseconds_last_packet_) {
             microseconds_toh_current_increased += 3600000000U;
@@ -218,11 +210,7 @@ void ContinuousPacketParserXt32::process_packet_into_cloud(
 
         for (int ind_point = 0; ind_point < data_block_first.get_size_data_points();
              ind_point++) {
-          //            const auto & data_point_first = data_block_first.data_points[ind_point];
           const auto & data_point_second = data_block_second.data_points[ind_point];
-
-//          float timing_offset_from_first_block = 5.632 - (50 * (8 - ind_block + 1));
-//          float timing_offset_from_first_firing = 1.512 * (ind_point - 1) + 0.368;
 
           float timing_offset_from_first_block;
           if (ind_block == 0 || ind_block == 1) {
@@ -251,7 +239,6 @@ void ContinuousPacketParserXt32::process_packet_into_cloud(
               angle_deg_azimuth_of_block_first +
               static_cast<float>(
                   speed_deg_per_microseconds_angle_azimuth * timing_offset_from_first_firing);
-//                  speed_deg_per_microseconds_angle_azimuth * (timing_offset_from_first_block+timing_offset_from_first_firing));
 
           if (angle_deg_azimuth_point >= 360.0f) {
             angle_deg_azimuth_point -= 360.0f;
@@ -299,8 +286,6 @@ void ContinuousPacketParserXt32::process_packet_into_cloud(
         if (!has_processed_a_packet_) {
           angle_deg_azimuth_last_packet_ = angle_deg_azimuth_of_block;
           microseconds_last_packet_ = microseconds_toh;
-          //          std::cout << "data_packet_with_header->microseconds_toh: " <<
-          //          data_packet_with_header->microseconds_toh << std::endl;
           has_processed_a_packet_ = true;
           break;
         } else if (ind_block == 0) {
@@ -333,24 +318,20 @@ void ContinuousPacketParserXt32::process_packet_into_cloud(
         for (size_t ind_point = 0; ind_point < data_block.get_size_data_points(); ind_point++) {
           const auto & data_point = data_block.data_points[ind_point];
 
-          //            double timing_offset_from_first_firing;
-          //            double timing_offset_from_first_block;
-
-          //            if (return_mode == ReturnMode::DualReturn) {
-          //              if (ind_block == 0 || ind_block == 1) {
-          //                timing_offset_from_first_block = 5.632 - (50 * 3);
-          //              } else if (ind_block == 2 || ind_block == 3) {
-          //                timing_offset_from_first_block = 5.632 - (50 * 2);
-          //              } else if (ind_block == 4 || ind_block == 5) {
-          //                timing_offset_from_first_block = 5.632 - (50 * 1);
-          //              } else if (ind_block == 6 || ind_block == 7) {
-          //                timing_offset_from_first_block = 5.632;
-          //              }
-          //              timing_offset_from_first_firing = 1.512 * (ind_point-1) + 0.368;
-          //            } else if (return_mode == ReturnMode::LastReturn) {
-          double timing_offset_from_first_block = 5.632 - (50 * (8 - ind_block + 1));
-          double timing_offset_from_first_firing = 1.512 * (ind_point - 1) + 0.368;
+          double timing_offset_from_first_block = 3.28 - (50 * (8 - ind_block + 1));
+          double timing_offset_from_first_firing = 1.512 * (ind_point - 1) + 0.28;
           //            }
+
+          auto timing_offset_from_first_block_dur =
+              std::chrono::duration<float, std::micro>(timing_offset_from_first_block);
+          auto timing_offset_from_first_firing_dur =
+              std::chrono::duration<float, std::micro>(timing_offset_from_first_firing);
+          auto timing_offset_from_first_block_time =
+              std::chrono::duration_cast<std::chrono::microseconds>(
+                  timing_offset_from_first_block_dur);
+          auto timing_offset_from_first_firing_time =
+              std::chrono::duration_cast<std::chrono::microseconds>(
+                  timing_offset_from_first_firing_dur);
 
           float angle_deg_azimuth_point =
               angle_deg_azimuth_of_block +
@@ -367,19 +348,12 @@ void ContinuousPacketParserXt32::process_packet_into_cloud(
           float angle_rad_vertical = utils::Utils::deg_to_rad(angle_deg_vertical);
           float dist_m = static_cast<float>(data_point.distance_divided_by_4mm * 4) / 1000.0f;
 
-          //          std::cout << dist_m << std::endl;
-
           float dist_xy = dist_m * std::cos(angle_rad_vertical);
           Point point;
           point.x = dist_xy * std::sin(angle_rad_azimuth_point);
           point.y = dist_xy * std::cos(angle_rad_azimuth_point);
           point.z = dist_m * std::sin(angle_rad_vertical);
           point.intensity = data_point.reflectivity;
-          //          std::vector<int> ring_vector{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
-          //          14, 15, 16,
-          //                                       17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28,
-          //                                       29, 30, 31};
-          //          point.ring = ring_vector.at(ind_point);
           point.ring = ind_point;
           point.horizontal_angle = angle_deg_azimuth_point;
           point.stamp_unix_seconds =
@@ -388,12 +362,10 @@ void ContinuousPacketParserXt32::process_packet_into_cloud(
                   microseconds_since_toh.seconds())
                   .count();
           point.stamp_nanoseconds =
-              std::chrono::nanoseconds(microseconds_since_toh.subseconds()).count();
-          std::chrono::duration point_duration =
-              std::chrono::seconds(
-                  tp_hours_since_epoch.time_since_epoch() + microseconds_since_toh.minutes() +
-                  microseconds_since_toh.seconds()) +
-              std::chrono::nanoseconds(microseconds_since_toh.subseconds());
+              std::chrono::nanoseconds(
+                  microseconds_since_toh.subseconds() + timing_offset_from_first_block_time +
+                  timing_offset_from_first_firing_time)
+                  .count();
 
           if (dist_m != 0 && dist_m <= max_point_distance_from_lidar &&
               dist_m >= min_point_distance_from_lidar ) {

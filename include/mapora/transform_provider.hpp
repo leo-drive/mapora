@@ -24,16 +24,14 @@
 #include <geometry_msgs/msg/pose_with_covariance.hpp>
 #include <sensor_msgs/msg/imu.hpp>
 
-namespace mapora::transform_provider_applanix
-{
+namespace mapora::transform_provider {
 namespace fs = boost::filesystem;
-class TransformProviderApplanix
-{
+class TransformProvider {
 public:
-  using SharedPtr = std::shared_ptr<TransformProviderApplanix>;
+  using SharedPtr = std::shared_ptr<TransformProvider>;
   using ConstSharedPtr = const SharedPtr;
 
-  explicit TransformProviderApplanix(const std::string & path_file_ascii_output);
+  explicit TransformProvider(const std::string & path_file_ascii_output);
 
   void process();
 
@@ -85,6 +83,6 @@ private:
   int last_index_imu;
   int last_index_pose;
 };
-}  // mapora::transform_provider_applanix
+}  // mapora::transform_provider
 
 #endif  // MAPORA__TRANSFORM_PROVIDER_APPLANIX_HPP_

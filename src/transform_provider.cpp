@@ -14,23 +14,23 @@
 * limitations under the License.
 */
 
-#include "mapora/transform_provider_applanix.hpp"
+#include "mapora/transform_provider.hpp"
 #include "mapora/csv.hpp"
-#include <string>
-#include <array>
-#include <fstream>
-#include <exception>
-#include <algorithm>
-#include <iostream>
-#include <Eigen/Geometry>
-#include <GeographicLib/TransverseMercatorExact.hpp>
-#include <GeographicLib/MGRS.hpp>
-#include <GeographicLib/UTMUPS.hpp>
 #include "mapora/date.h"
 #include "mapora/utils.hpp"
+#include <Eigen/Geometry>
+#include <GeographicLib/MGRS.hpp>
+#include <GeographicLib/TransverseMercatorExact.hpp>
+#include <GeographicLib/UTMUPS.hpp>
+#include <algorithm>
+#include <array>
+#include <exception>
+#include <fstream>
+#include <iostream>
+#include <string>
 
-namespace mapora::transform_provider_applanix {
-TransformProviderApplanix::TransformProviderApplanix(
+namespace mapora::transform_provider {
+TransformProvider::TransformProvider(
   const std::string &path_file_ascii_output)
   : path_file_ascii_output_(path_file_ascii_output) {
   if (!fs::exists(path_file_ascii_output_)) {
@@ -43,7 +43,7 @@ TransformProviderApplanix::TransformProviderApplanix(
   }
 }
 
-void TransformProviderApplanix::process() {
+void TransformProvider::process() {
   io::LineReader lines(path_file_ascii_output_.string());
   double line_number_for_header = 1;
   while (char *line = lines.next_line())
@@ -52,7 +52,7 @@ void TransformProviderApplanix::process() {
     if (line_number_for_header == 16) {  // 16 is the mission date line in the applanix export file
       mission_date += line;
       mission_date.erase(0, 20);  // erases 20 characters from 0.
-      std::cout << "mission_date: " << mission_date << std::endl;
+//      std::cout << "mission_date: " << mission_date << std::endl;
       break;
     }
 
@@ -64,7 +64,7 @@ void TransformProviderApplanix::process() {
     line_number_for_header++;
   }
 
-  std::string path_applanix_modified = "temp_applanix_modified.csv";
+  std::string path_applanix_modified = "temp_modified.csv";
   {
     std::ifstream filein(path_file_ascii_output_.string()); //File to read from
     std::ofstream fileout(path_applanix_modified); //Temporary file
@@ -332,7 +332,8 @@ void TransformProviderApplanix::process() {
   }
 }
 
-TransformProviderApplanix::Pose TransformProviderApplanix::get_pose_at(
+TransformProvider::Pose
+TransformProvider::get_pose_at(
   uint32_t stamp_unix_seconds,
   uint32_t stamp_nanoseconds) {
   Pose pose_search;
@@ -350,7 +351,8 @@ TransformProviderApplanix::Pose TransformProviderApplanix::get_pose_at(
   return poses_.at(index);
 }
 
-TransformProviderApplanix::Imu TransformProviderApplanix::get_imu_at(
+TransformProvider::Imu
+TransformProvider::get_imu_at(
     uint32_t stamp_unix_seconds, uint32_t stamp_nanoseconds)
 {
   Imu imu_search;
@@ -385,7 +387,8 @@ TransformProviderApplanix::Imu TransformProviderApplanix::get_imu_at(
   //  std::cout << "ind: " << index << std::endl;
   return imu_rotations_.at(index);
 }
-std::vector<double> TransformProviderApplanix::parse_mgrs_coordinates(const std::string & mgrs_string) {
+std::vector<double>
+TransformProvider::parse_mgrs_coordinates(const std::string & mgrs_string) {
   std::string mgrs_grid = mgrs_string.substr(0, 5);
   std::string mgrs_x_str = mgrs_string.substr(5, 8);
   std::string mgrs_y_str = mgrs_string.substr(13, 8);
@@ -399,11 +402,11 @@ std::vector<double> TransformProviderApplanix::parse_mgrs_coordinates(const std:
   return std::vector{mgrs_x, mgrs_y};
 }
 
-std::string TransformProviderApplanix::parse_mgrs_zone(const std::string & mgrs_string) {
+std::string TransformProvider::parse_mgrs_zone(const std::string & mgrs_string) {
   return mgrs_string.substr(0, 5);
 }
 
-float TransformProviderApplanix::compute_meridian_convergence(double lat, double lon) {
+float TransformProvider::compute_meridian_convergence(double lat, double lon) {
 
   double x, y;
   int zone;

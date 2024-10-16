@@ -17,16 +17,16 @@
 #include <boost/filesystem.hpp>
 #include <boost/range/iterator_range.hpp>
 
-#include <pcapplusplus/PcapFileDevice.h>
+#include "mapora/parsers/hesai_xt32.hpp"
+#include "mapora/parsers/velodyne_vlp16.hpp"
+#include "mapora/point_types.hpp"
+#include "mapora/points_provider.hpp"
+#include <algorithm>
 #include <exception>
 #include <iostream>
-#include <algorithm>
+#include <pcapplusplus/PcapFileDevice.h>
 #include <string>
 #include <vector>
-#include "mapora/point_types.hpp"
-#include "mapora/points_provider_velodyne_vlp16.hpp"
-#include "mapora/parsers/velodyne_vlp16.hpp"
-#include "mapora/parsers/hesai_xt32.hpp"
 
 namespace mapora::points_provider {
 namespace fs = boost::filesystem;
@@ -48,7 +48,7 @@ void PointsProvider::process() {
     boost::make_iterator_range(fs::directory_iterator(path_folder_pcaps_))) {
     if (fs::is_directory(path_pcap.path())) { continue; }
     if (path_pcap.path().extension() != ".pcap") { continue; }
-    std::cout << "pcap: " << path_pcap.path().string() << std::endl;
+//    std::cout << "pcap: " << path_pcap.path().string() << std::endl;
     paths_pcaps_.push_back(path_pcap);
   }
 
@@ -96,7 +96,7 @@ void PointsProvider::process_pcap_into_clouds(
     parser_type &parser,
   const float min_point_distance_from_lidar,
   const float max_point_distance_from_lidar) {
-  std::cout << "processing: " << path_pcap << std::endl;
+//  std::cout << "processing: " << path_pcap << std::endl;
   pcpp::IFileReaderDevice *reader = pcpp::IFileReaderDevice::getReader(path_pcap.string());
   if (reader == nullptr) {
     printf("Cannot determine reader for file type\n");

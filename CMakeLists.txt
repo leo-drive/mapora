@@ -31,10 +31,10 @@ include_directories(include
 set(MAPORA_LIB_SRC
         src/mapora.cpp
         src/mapora_rosbag.cpp
-        src/points_provider_velodyne_vlp16.cpp
+        src/points_provider.cpp
         src/parsers/velodyne_vlp16.cpp
         src/parsers/hesai_xt32.cpp
-        src/transform_provider_applanix.cpp
+        src/transform_provider.cpp
         src/utils.cpp)
 
 set(MAPORA_LIB_HEADERS
@@ -43,10 +43,10 @@ set(MAPORA_LIB_HEADERS
         include/mapora/date.h
         include/mapora/csv.hpp
         include/mapora/point_types.hpp
-        include/mapora/points_provider_velodyne_vlp16.hpp
+        include/mapora/points_provider.hpp
         include/mapora/parsers/velodyne_vlp16.hpp
         include/mapora/parsers/hesai_xt32.hpp
-        include/mapora/transform_provider_applanix.hpp
+        include/mapora/transform_provider.hpp
         include/mapora/utils.hpp
         include/mapora/visibility_control.hpp)
 
